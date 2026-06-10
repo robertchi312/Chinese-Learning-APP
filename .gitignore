@@ -1,0 +1,16 @@
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+
+# Generated native projects (recreate with `npx expo prebuild`)
+mobile-app/android/
+mobile-app/ios/
+
+# EAS
+.easignore
+
+# OS
+.DS_Store

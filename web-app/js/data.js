@@ -1,0 +1,1243 @@
+// Generated from shared/characters.json — do not edit by hand.
+const CHARACTERS = [
+  {
+    "char": "一",
+    "pinyin": "yī",
+    "meaning": "one",
+    "example": "一个",
+    "examplePinyin": "yī gè",
+    "exampleMeaning": "one (of something)"
+  },
+  {
+    "char": "二",
+    "pinyin": "èr",
+    "meaning": "two",
+    "example": "二月",
+    "examplePinyin": "èr yuè",
+    "exampleMeaning": "February"
+  },
+  {
+    "char": "三",
+    "pinyin": "sān",
+    "meaning": "three",
+    "example": "三天",
+    "examplePinyin": "sān tiān",
+    "exampleMeaning": "three days"
+  },
+  {
+    "char": "四",
+    "pinyin": "sì",
+    "meaning": "four",
+    "example": "四个",
+    "examplePinyin": "sì gè",
+    "exampleMeaning": "four (of something)"
+  },
+  {
+    "char": "五",
+    "pinyin": "wǔ",
+    "meaning": "five",
+    "example": "五年",
+    "examplePinyin": "wǔ nián",
+    "exampleMeaning": "five years"
+  },
+  {
+    "char": "六",
+    "pinyin": "liù",
+    "meaning": "six",
+    "example": "六点",
+    "examplePinyin": "liù diǎn",
+    "exampleMeaning": "six o'clock"
+  },
+  {
+    "char": "七",
+    "pinyin": "qī",
+    "meaning": "seven",
+    "example": "七天",
+    "examplePinyin": "qī tiān",
+    "exampleMeaning": "seven days"
+  },
+  {
+    "char": "八",
+    "pinyin": "bā",
+    "meaning": "eight",
+    "example": "八个",
+    "examplePinyin": "bā gè",
+    "exampleMeaning": "eight (of something)"
+  },
+  {
+    "char": "九",
+    "pinyin": "jiǔ",
+    "meaning": "nine",
+    "example": "九月",
+    "examplePinyin": "jiǔ yuè",
+    "exampleMeaning": "September"
+  },
+  {
+    "char": "十",
+    "pinyin": "shí",
+    "meaning": "ten",
+    "example": "十块",
+    "examplePinyin": "shí kuài",
+    "exampleMeaning": "ten yuan"
+  },
+  {
+    "char": "人",
+    "pinyin": "rén",
+    "meaning": "person",
+    "example": "中国人",
+    "examplePinyin": "zhōng guó rén",
+    "exampleMeaning": "Chinese person"
+  },
+  {
+    "char": "我",
+    "pinyin": "wǒ",
+    "meaning": "I, me",
+    "example": "我们",
+    "examplePinyin": "wǒ men",
+    "exampleMeaning": "we, us"
+  },
+  {
+    "char": "你",
+    "pinyin": "nǐ",
+    "meaning": "you",
+    "example": "你好",
+    "examplePinyin": "nǐ hǎo",
+    "exampleMeaning": "hello"
+  },
+  {
+    "char": "他",
+    "pinyin": "tā",
+    "meaning": "he, him",
+    "example": "他们",
+    "examplePinyin": "tā men",
+    "exampleMeaning": "they (male/mixed)"
+  },
+  {
+    "char": "她",
+    "pinyin": "tā",
+    "meaning": "she, her",
+    "example": "她们",
+    "examplePinyin": "tā men",
+    "exampleMeaning": "they (female)"
+  },
+  {
+    "char": "好",
+    "pinyin": "hǎo",
+    "meaning": "good",
+    "example": "很好",
+    "examplePinyin": "hěn hǎo",
+    "exampleMeaning": "very good"
+  },
+  {
+    "char": "是",
+    "pinyin": "shì",
+    "meaning": "to be",
+    "example": "是的",
+    "examplePinyin": "shì de",
+    "exampleMeaning": "yes, that's right"
+  },
+  {
+    "char": "不",
+    "pinyin": "bù",
+    "meaning": "no, not",
+    "example": "不是",
+    "examplePinyin": "bù shì",
+    "exampleMeaning": "is not"
+  },
+  {
+    "char": "的",
+    "pinyin": "de",
+    "meaning": "possessive particle",
+    "example": "我的",
+    "examplePinyin": "wǒ de",
+    "exampleMeaning": "mine"
+  },
+  {
+    "char": "了",
+    "pinyin": "le",
+    "meaning": "completed action particle",
+    "example": "好了",
+    "examplePinyin": "hǎo le",
+    "exampleMeaning": "done, okay"
+  },
+  {
+    "char": "在",
+    "pinyin": "zài",
+    "meaning": "at, in, on",
+    "example": "在家",
+    "examplePinyin": "zài jiā",
+    "exampleMeaning": "at home"
+  },
+  {
+    "char": "有",
+    "pinyin": "yǒu",
+    "meaning": "to have",
+    "example": "没有",
+    "examplePinyin": "méi yǒu",
+    "exampleMeaning": "to not have"
+  },
+  {
+    "char": "大",
+    "pinyin": "dà",
+    "meaning": "big",
+    "example": "大学",
+    "examplePinyin": "dà xué",
+    "exampleMeaning": "university"
+  },
+  {
+    "char": "小",
+    "pinyin": "xiǎo",
+    "meaning": "small",
+    "example": "小姐",
+    "examplePinyin": "xiǎo jiě",
+    "exampleMeaning": "Miss, young lady"
+  },
+  {
+    "char": "中",
+    "pinyin": "zhōng",
+    "meaning": "middle, China",
+    "example": "中国",
+    "examplePinyin": "zhōng guó",
+    "exampleMeaning": "China"
+  },
+  {
+    "char": "国",
+    "pinyin": "guó",
+    "meaning": "country",
+    "example": "美国",
+    "examplePinyin": "měi guó",
+    "exampleMeaning": "USA"
+  },
+  {
+    "char": "上",
+    "pinyin": "shàng",
+    "meaning": "up, above",
+    "example": "上午",
+    "examplePinyin": "shàng wǔ",
+    "exampleMeaning": "morning"
+  },
+  {
+    "char": "下",
+    "pinyin": "xià",
+    "meaning": "down, below",
+    "example": "下雨",
+    "examplePinyin": "xià yǔ",
+    "exampleMeaning": "to rain"
+  },
+  {
+    "char": "天",
+    "pinyin": "tiān",
+    "meaning": "sky, day",
+    "example": "今天",
+    "examplePinyin": "jīn tiān",
+    "exampleMeaning": "today"
+  },
+  {
+    "char": "年",
+    "pinyin": "nián",
+    "meaning": "year",
+    "example": "今年",
+    "examplePinyin": "jīn nián",
+    "exampleMeaning": "this year"
+  },
+  {
+    "char": "月",
+    "pinyin": "yuè",
+    "meaning": "moon, month",
+    "example": "一月",
+    "examplePinyin": "yī yuè",
+    "exampleMeaning": "January"
+  },
+  {
+    "char": "日",
+    "pinyin": "rì",
+    "meaning": "sun, day",
+    "example": "生日",
+    "examplePinyin": "shēng rì",
+    "exampleMeaning": "birthday"
+  },
+  {
+    "char": "今",
+    "pinyin": "jīn",
+    "meaning": "now, today",
+    "example": "今天",
+    "examplePinyin": "jīn tiān",
+    "exampleMeaning": "today"
+  },
+  {
+    "char": "明",
+    "pinyin": "míng",
+    "meaning": "bright, next",
+    "example": "明天",
+    "examplePinyin": "míng tiān",
+    "exampleMeaning": "tomorrow"
+  },
+  {
+    "char": "昨",
+    "pinyin": "zuó",
+    "meaning": "yesterday",
+    "example": "昨天",
+    "examplePinyin": "zuó tiān",
+    "exampleMeaning": "yesterday"
+  },
+  {
+    "char": "时",
+    "pinyin": "shí",
+    "meaning": "time, hour",
+    "example": "时候",
+    "examplePinyin": "shí hou",
+    "exampleMeaning": "time, moment"
+  },
+  {
+    "char": "分",
+    "pinyin": "fēn",
+    "meaning": "minute, to divide",
+    "example": "十分",
+    "examplePinyin": "shí fēn",
+    "exampleMeaning": "ten minutes; very"
+  },
+  {
+    "char": "点",
+    "pinyin": "diǎn",
+    "meaning": "o'clock, dot",
+    "example": "三点",
+    "examplePinyin": "sān diǎn",
+    "exampleMeaning": "three o'clock"
+  },
+  {
+    "char": "星",
+    "pinyin": "xīng",
+    "meaning": "star",
+    "example": "星期",
+    "examplePinyin": "xīng qī",
+    "exampleMeaning": "week"
+  },
+  {
+    "char": "期",
+    "pinyin": "qī",
+    "meaning": "period of time",
+    "example": "星期天",
+    "examplePinyin": "xīng qī tiān",
+    "exampleMeaning": "Sunday"
+  },
+  {
+    "char": "妈",
+    "pinyin": "mā",
+    "meaning": "mom",
+    "example": "妈妈",
+    "examplePinyin": "mā ma",
+    "exampleMeaning": "mother"
+  },
+  {
+    "char": "爸",
+    "pinyin": "bà",
+    "meaning": "dad",
+    "example": "爸爸",
+    "examplePinyin": "bà ba",
+    "exampleMeaning": "father"
+  },
+  {
+    "char": "儿",
+    "pinyin": "ér",
+    "meaning": "child, son",
+    "example": "儿子",
+    "examplePinyin": "ér zi",
+    "exampleMeaning": "son"
+  },
+  {
+    "char": "女",
+    "pinyin": "nǚ",
+    "meaning": "female, woman",
+    "example": "女儿",
+    "examplePinyin": "nǚ ér",
+    "exampleMeaning": "daughter"
+  },
+  {
+    "char": "家",
+    "pinyin": "jiā",
+    "meaning": "home, family",
+    "example": "回家",
+    "examplePinyin": "huí jiā",
+    "exampleMeaning": "to go home"
+  },
+  {
+    "char": "朋",
+    "pinyin": "péng",
+    "meaning": "friend",
+    "example": "朋友",
+    "examplePinyin": "péng you",
+    "exampleMeaning": "friend"
+  },
+  {
+    "char": "友",
+    "pinyin": "yǒu",
+    "meaning": "friend",
+    "example": "好朋友",
+    "examplePinyin": "hǎo péng you",
+    "exampleMeaning": "good friend"
+  },
+  {
+    "char": "老",
+    "pinyin": "lǎo",
+    "meaning": "old",
+    "example": "老师",
+    "examplePinyin": "lǎo shī",
+    "exampleMeaning": "teacher"
+  },
+  {
+    "char": "师",
+    "pinyin": "shī",
+    "meaning": "teacher, master",
+    "example": "老师",
+    "examplePinyin": "lǎo shī",
+    "exampleMeaning": "teacher"
+  },
+  {
+    "char": "生",
+    "pinyin": "shēng",
+    "meaning": "to be born, life",
+    "example": "学生",
+    "examplePinyin": "xué sheng",
+    "exampleMeaning": "student"
+  },
+  {
+    "char": "学",
+    "pinyin": "xué",
+    "meaning": "to study",
+    "example": "学习",
+    "examplePinyin": "xué xí",
+    "exampleMeaning": "to study, learn"
+  },
+  {
+    "char": "校",
+    "pinyin": "xiào",
+    "meaning": "school",
+    "example": "学校",
+    "examplePinyin": "xué xiào",
+    "exampleMeaning": "school"
+  },
+  {
+    "char": "同",
+    "pinyin": "tóng",
+    "meaning": "same, together",
+    "example": "同学",
+    "examplePinyin": "tóng xué",
+    "exampleMeaning": "classmate"
+  },
+  {
+    "char": "名",
+    "pinyin": "míng",
+    "meaning": "name",
+    "example": "名字",
+    "examplePinyin": "míng zi",
+    "exampleMeaning": "name"
+  },
+  {
+    "char": "字",
+    "pinyin": "zì",
+    "meaning": "character, word",
+    "example": "汉字",
+    "examplePinyin": "hàn zì",
+    "exampleMeaning": "Chinese character"
+  },
+  {
+    "char": "汉",
+    "pinyin": "hàn",
+    "meaning": "Han, Chinese",
+    "example": "汉语",
+    "examplePinyin": "hàn yǔ",
+    "exampleMeaning": "Chinese language"
+  },
+  {
+    "char": "语",
+    "pinyin": "yǔ",
+    "meaning": "language",
+    "example": "汉语",
+    "examplePinyin": "hàn yǔ",
+    "exampleMeaning": "Chinese language"
+  },
+  {
+    "char": "书",
+    "pinyin": "shū",
+    "meaning": "book",
+    "example": "看书",
+    "examplePinyin": "kàn shū",
+    "exampleMeaning": "to read a book"
+  },
+  {
+    "char": "写",
+    "pinyin": "xiě",
+    "meaning": "to write",
+    "example": "写字",
+    "examplePinyin": "xiě zì",
+    "exampleMeaning": "to write characters"
+  },
+  {
+    "char": "读",
+    "pinyin": "dú",
+    "meaning": "to read",
+    "example": "读书",
+    "examplePinyin": "dú shū",
+    "exampleMeaning": "to read, to study"
+  },
+  {
+    "char": "说",
+    "pinyin": "shuō",
+    "meaning": "to speak",
+    "example": "说话",
+    "examplePinyin": "shuō huà",
+    "exampleMeaning": "to talk"
+  },
+  {
+    "char": "话",
+    "pinyin": "huà",
+    "meaning": "speech, words",
+    "example": "电话",
+    "examplePinyin": "diàn huà",
+    "exampleMeaning": "telephone"
+  },
+  {
+    "char": "听",
+    "pinyin": "tīng",
+    "meaning": "to listen",
+    "example": "听音乐",
+    "examplePinyin": "tīng yīn yuè",
+    "exampleMeaning": "to listen to music"
+  },
+  {
+    "char": "看",
+    "pinyin": "kàn",
+    "meaning": "to look, watch",
+    "example": "看见",
+    "examplePinyin": "kàn jiàn",
+    "exampleMeaning": "to see"
+  },
+  {
+    "char": "见",
+    "pinyin": "jiàn",
+    "meaning": "to see, meet",
+    "example": "再见",
+    "examplePinyin": "zài jiàn",
+    "exampleMeaning": "goodbye"
+  },
+  {
+    "char": "想",
+    "pinyin": "xiǎng",
+    "meaning": "to think, want",
+    "example": "想家",
+    "examplePinyin": "xiǎng jiā",
+    "exampleMeaning": "to be homesick"
+  },
+  {
+    "char": "会",
+    "pinyin": "huì",
+    "meaning": "can, to know how",
+    "example": "不会",
+    "examplePinyin": "bù huì",
+    "exampleMeaning": "cannot"
+  },
+  {
+    "char": "能",
+    "pinyin": "néng",
+    "meaning": "can, to be able",
+    "example": "能不能",
+    "examplePinyin": "néng bu néng",
+    "exampleMeaning": "can or not?"
+  },
+  {
+    "char": "来",
+    "pinyin": "lái",
+    "meaning": "to come",
+    "example": "回来",
+    "examplePinyin": "huí lái",
+    "exampleMeaning": "to come back"
+  },
+  {
+    "char": "去",
+    "pinyin": "qù",
+    "meaning": "to go",
+    "example": "去年",
+    "examplePinyin": "qù nián",
+    "exampleMeaning": "last year"
+  },
+  {
+    "char": "回",
+    "pinyin": "huí",
+    "meaning": "to return",
+    "example": "回家",
+    "examplePinyin": "huí jiā",
+    "exampleMeaning": "to go home"
+  },
+  {
+    "char": "出",
+    "pinyin": "chū",
+    "meaning": "to go out",
+    "example": "出去",
+    "examplePinyin": "chū qù",
+    "exampleMeaning": "to go outside"
+  },
+  {
+    "char": "开",
+    "pinyin": "kāi",
+    "meaning": "to open, drive",
+    "example": "开车",
+    "examplePinyin": "kāi chē",
+    "exampleMeaning": "to drive a car"
+  },
+  {
+    "char": "坐",
+    "pinyin": "zuò",
+    "meaning": "to sit",
+    "example": "请坐",
+    "examplePinyin": "qǐng zuò",
+    "exampleMeaning": "please sit"
+  },
+  {
+    "char": "住",
+    "pinyin": "zhù",
+    "meaning": "to live, reside",
+    "example": "住在",
+    "examplePinyin": "zhù zài",
+    "exampleMeaning": "to live at"
+  },
+  {
+    "char": "做",
+    "pinyin": "zuò",
+    "meaning": "to do, make",
+    "example": "做饭",
+    "examplePinyin": "zuò fàn",
+    "exampleMeaning": "to cook"
+  },
+  {
+    "char": "工",
+    "pinyin": "gōng",
+    "meaning": "work",
+    "example": "工作",
+    "examplePinyin": "gōng zuò",
+    "exampleMeaning": "job, to work"
+  },
+  {
+    "char": "作",
+    "pinyin": "zuò",
+    "meaning": "to do, work",
+    "example": "工作",
+    "examplePinyin": "gōng zuò",
+    "exampleMeaning": "job, to work"
+  },
+  {
+    "char": "吃",
+    "pinyin": "chī",
+    "meaning": "to eat",
+    "example": "吃饭",
+    "examplePinyin": "chī fàn",
+    "exampleMeaning": "to eat a meal"
+  },
+  {
+    "char": "饭",
+    "pinyin": "fàn",
+    "meaning": "rice, meal",
+    "example": "米饭",
+    "examplePinyin": "mǐ fàn",
+    "exampleMeaning": "cooked rice"
+  },
+  {
+    "char": "喝",
+    "pinyin": "hē",
+    "meaning": "to drink",
+    "example": "喝水",
+    "examplePinyin": "hē shuǐ",
+    "exampleMeaning": "to drink water"
+  },
+  {
+    "char": "水",
+    "pinyin": "shuǐ",
+    "meaning": "water",
+    "example": "水果",
+    "examplePinyin": "shuǐ guǒ",
+    "exampleMeaning": "fruit"
+  },
+  {
+    "char": "茶",
+    "pinyin": "chá",
+    "meaning": "tea",
+    "example": "喝茶",
+    "examplePinyin": "hē chá",
+    "exampleMeaning": "to drink tea"
+  },
+  {
+    "char": "菜",
+    "pinyin": "cài",
+    "meaning": "vegetable, dish",
+    "example": "中国菜",
+    "examplePinyin": "zhōng guó cài",
+    "exampleMeaning": "Chinese food"
+  },
+  {
+    "char": "米",
+    "pinyin": "mǐ",
+    "meaning": "rice (uncooked)",
+    "example": "米饭",
+    "examplePinyin": "mǐ fàn",
+    "exampleMeaning": "cooked rice"
+  },
+  {
+    "char": "果",
+    "pinyin": "guǒ",
+    "meaning": "fruit, result",
+    "example": "苹果",
+    "examplePinyin": "píng guǒ",
+    "exampleMeaning": "apple"
+  },
+  {
+    "char": "猫",
+    "pinyin": "māo",
+    "meaning": "cat",
+    "example": "小猫",
+    "examplePinyin": "xiǎo māo",
+    "exampleMeaning": "kitten"
+  },
+  {
+    "char": "狗",
+    "pinyin": "gǒu",
+    "meaning": "dog",
+    "example": "小狗",
+    "examplePinyin": "xiǎo gǒu",
+    "exampleMeaning": "puppy"
+  },
+  {
+    "char": "爱",
+    "pinyin": "ài",
+    "meaning": "to love",
+    "example": "爱人",
+    "examplePinyin": "ài ren",
+    "exampleMeaning": "spouse, lover"
+  },
+  {
+    "char": "买",
+    "pinyin": "mǎi",
+    "meaning": "to buy",
+    "example": "买东西",
+    "examplePinyin": "mǎi dōng xi",
+    "exampleMeaning": "to go shopping"
+  },
+  {
+    "char": "钱",
+    "pinyin": "qián",
+    "meaning": "money",
+    "example": "多少钱",
+    "examplePinyin": "duō shao qián",
+    "exampleMeaning": "how much money?"
+  },
+  {
+    "char": "块",
+    "pinyin": "kuài",
+    "meaning": "piece, yuan",
+    "example": "五块钱",
+    "examplePinyin": "wǔ kuài qián",
+    "exampleMeaning": "five yuan"
+  },
+  {
+    "char": "东",
+    "pinyin": "dōng",
+    "meaning": "east",
+    "example": "东西",
+    "examplePinyin": "dōng xi",
+    "exampleMeaning": "thing, stuff"
+  },
+  {
+    "char": "西",
+    "pinyin": "xī",
+    "meaning": "west",
+    "example": "西瓜",
+    "examplePinyin": "xī guā",
+    "exampleMeaning": "watermelon"
+  },
+  {
+    "char": "北",
+    "pinyin": "běi",
+    "meaning": "north",
+    "example": "北京",
+    "examplePinyin": "běi jīng",
+    "exampleMeaning": "Beijing"
+  },
+  {
+    "char": "京",
+    "pinyin": "jīng",
+    "meaning": "capital city",
+    "example": "北京",
+    "examplePinyin": "běi jīng",
+    "exampleMeaning": "Beijing"
+  },
+  {
+    "char": "电",
+    "pinyin": "diàn",
+    "meaning": "electricity",
+    "example": "电脑",
+    "examplePinyin": "diàn nǎo",
+    "exampleMeaning": "computer"
+  },
+  {
+    "char": "脑",
+    "pinyin": "nǎo",
+    "meaning": "brain",
+    "example": "电脑",
+    "examplePinyin": "diàn nǎo",
+    "exampleMeaning": "computer"
+  },
+  {
+    "char": "视",
+    "pinyin": "shì",
+    "meaning": "to view",
+    "example": "电视",
+    "examplePinyin": "diàn shì",
+    "exampleMeaning": "television"
+  },
+  {
+    "char": "影",
+    "pinyin": "yǐng",
+    "meaning": "shadow, image",
+    "example": "电影",
+    "examplePinyin": "diàn yǐng",
+    "exampleMeaning": "movie"
+  },
+  {
+    "char": "车",
+    "pinyin": "chē",
+    "meaning": "car, vehicle",
+    "example": "火车",
+    "examplePinyin": "huǒ chē",
+    "exampleMeaning": "train"
+  },
+  {
+    "char": "火",
+    "pinyin": "huǒ",
+    "meaning": "fire",
+    "example": "火车站",
+    "examplePinyin": "huǒ chē zhàn",
+    "exampleMeaning": "train station"
+  },
+  {
+    "char": "飞",
+    "pinyin": "fēi",
+    "meaning": "to fly",
+    "example": "飞机",
+    "examplePinyin": "fēi jī",
+    "exampleMeaning": "airplane"
+  },
+  {
+    "char": "机",
+    "pinyin": "jī",
+    "meaning": "machine",
+    "example": "手机",
+    "examplePinyin": "shǒu jī",
+    "exampleMeaning": "mobile phone"
+  },
+  {
+    "char": "手",
+    "pinyin": "shǒu",
+    "meaning": "hand",
+    "example": "手机",
+    "examplePinyin": "shǒu jī",
+    "exampleMeaning": "mobile phone"
+  },
+  {
+    "char": "口",
+    "pinyin": "kǒu",
+    "meaning": "mouth, opening",
+    "example": "人口",
+    "examplePinyin": "rén kǒu",
+    "exampleMeaning": "population"
+  },
+  {
+    "char": "心",
+    "pinyin": "xīn",
+    "meaning": "heart, mind",
+    "example": "小心",
+    "examplePinyin": "xiǎo xīn",
+    "exampleMeaning": "be careful"
+  },
+  {
+    "char": "热",
+    "pinyin": "rè",
+    "meaning": "hot",
+    "example": "很热",
+    "examplePinyin": "hěn rè",
+    "exampleMeaning": "very hot"
+  },
+  {
+    "char": "冷",
+    "pinyin": "lěng",
+    "meaning": "cold",
+    "example": "很冷",
+    "examplePinyin": "hěn lěng",
+    "exampleMeaning": "very cold"
+  },
+  {
+    "char": "雨",
+    "pinyin": "yǔ",
+    "meaning": "rain",
+    "example": "下雨",
+    "examplePinyin": "xià yǔ",
+    "exampleMeaning": "to rain"
+  },
+  {
+    "char": "高",
+    "pinyin": "gāo",
+    "meaning": "tall, high",
+    "example": "高兴",
+    "examplePinyin": "gāo xìng",
+    "exampleMeaning": "happy"
+  },
+  {
+    "char": "兴",
+    "pinyin": "xìng",
+    "meaning": "interest, mood",
+    "example": "高兴",
+    "examplePinyin": "gāo xìng",
+    "exampleMeaning": "happy"
+  },
+  {
+    "char": "多",
+    "pinyin": "duō",
+    "meaning": "many, much",
+    "example": "多少",
+    "examplePinyin": "duō shao",
+    "exampleMeaning": "how many?"
+  },
+  {
+    "char": "少",
+    "pinyin": "shǎo",
+    "meaning": "few, little",
+    "example": "很少",
+    "examplePinyin": "hěn shǎo",
+    "exampleMeaning": "very few"
+  },
+  {
+    "char": "很",
+    "pinyin": "hěn",
+    "meaning": "very",
+    "example": "很好",
+    "examplePinyin": "hěn hǎo",
+    "exampleMeaning": "very good"
+  },
+  {
+    "char": "都",
+    "pinyin": "dōu",
+    "meaning": "all, both",
+    "example": "都是",
+    "examplePinyin": "dōu shì",
+    "exampleMeaning": "all are"
+  },
+  {
+    "char": "和",
+    "pinyin": "hé",
+    "meaning": "and, with",
+    "example": "我和你",
+    "examplePinyin": "wǒ hé nǐ",
+    "exampleMeaning": "you and I"
+  },
+  {
+    "char": "吗",
+    "pinyin": "ma",
+    "meaning": "question particle",
+    "example": "好吗",
+    "examplePinyin": "hǎo ma",
+    "exampleMeaning": "okay?"
+  },
+  {
+    "char": "呢",
+    "pinyin": "ne",
+    "meaning": "question particle",
+    "example": "你呢",
+    "examplePinyin": "nǐ ne",
+    "exampleMeaning": "and you?"
+  },
+  {
+    "char": "什",
+    "pinyin": "shén",
+    "meaning": "what",
+    "example": "什么",
+    "examplePinyin": "shén me",
+    "exampleMeaning": "what"
+  },
+  {
+    "char": "么",
+    "pinyin": "me",
+    "meaning": "suffix (what/how)",
+    "example": "什么",
+    "examplePinyin": "shén me",
+    "exampleMeaning": "what"
+  },
+  {
+    "char": "谁",
+    "pinyin": "shéi",
+    "meaning": "who",
+    "example": "是谁",
+    "examplePinyin": "shì shéi",
+    "exampleMeaning": "who is it?"
+  },
+  {
+    "char": "哪",
+    "pinyin": "nǎ",
+    "meaning": "which",
+    "example": "哪儿",
+    "examplePinyin": "nǎr",
+    "exampleMeaning": "where"
+  },
+  {
+    "char": "那",
+    "pinyin": "nà",
+    "meaning": "that",
+    "example": "那个",
+    "examplePinyin": "nà ge",
+    "exampleMeaning": "that one"
+  },
+  {
+    "char": "这",
+    "pinyin": "zhè",
+    "meaning": "this",
+    "example": "这个",
+    "examplePinyin": "zhè ge",
+    "exampleMeaning": "this one"
+  },
+  {
+    "char": "怎",
+    "pinyin": "zěn",
+    "meaning": "how",
+    "example": "怎么",
+    "examplePinyin": "zěn me",
+    "exampleMeaning": "how"
+  },
+  {
+    "char": "几",
+    "pinyin": "jǐ",
+    "meaning": "how many",
+    "example": "几个",
+    "examplePinyin": "jǐ gè",
+    "exampleMeaning": "how many?"
+  },
+  {
+    "char": "个",
+    "pinyin": "gè",
+    "meaning": "measure word (general)",
+    "example": "一个人",
+    "examplePinyin": "yī gè rén",
+    "exampleMeaning": "one person"
+  },
+  {
+    "char": "本",
+    "pinyin": "běn",
+    "meaning": "measure word (books)",
+    "example": "一本书",
+    "examplePinyin": "yī běn shū",
+    "exampleMeaning": "one book"
+  },
+  {
+    "char": "岁",
+    "pinyin": "suì",
+    "meaning": "years of age",
+    "example": "十岁",
+    "examplePinyin": "shí suì",
+    "exampleMeaning": "ten years old"
+  },
+  {
+    "char": "号",
+    "pinyin": "hào",
+    "meaning": "number, date",
+    "example": "几号",
+    "examplePinyin": "jǐ hào",
+    "exampleMeaning": "what date?"
+  },
+  {
+    "char": "叫",
+    "pinyin": "jiào",
+    "meaning": "to be called",
+    "example": "我叫",
+    "examplePinyin": "wǒ jiào",
+    "exampleMeaning": "my name is"
+  },
+  {
+    "char": "请",
+    "pinyin": "qǐng",
+    "meaning": "please, to invite",
+    "example": "请问",
+    "examplePinyin": "qǐng wèn",
+    "exampleMeaning": "excuse me, may I ask"
+  },
+  {
+    "char": "谢",
+    "pinyin": "xiè",
+    "meaning": "to thank",
+    "example": "谢谢",
+    "examplePinyin": "xiè xie",
+    "exampleMeaning": "thank you"
+  },
+  {
+    "char": "对",
+    "pinyin": "duì",
+    "meaning": "correct, towards",
+    "example": "对不起",
+    "examplePinyin": "duì bu qǐ",
+    "exampleMeaning": "sorry"
+  },
+  {
+    "char": "没",
+    "pinyin": "méi",
+    "meaning": "not (have)",
+    "example": "没关系",
+    "examplePinyin": "méi guān xi",
+    "exampleMeaning": "it's okay"
+  },
+  {
+    "char": "再",
+    "pinyin": "zài",
+    "meaning": "again",
+    "example": "再见",
+    "examplePinyin": "zài jiàn",
+    "exampleMeaning": "goodbye"
+  },
+  {
+    "char": "先",
+    "pinyin": "xiān",
+    "meaning": "first, before",
+    "example": "先生",
+    "examplePinyin": "xiān sheng",
+    "exampleMeaning": "Mr., sir"
+  },
+  {
+    "char": "现",
+    "pinyin": "xiàn",
+    "meaning": "present, now",
+    "example": "现在",
+    "examplePinyin": "xiàn zài",
+    "exampleMeaning": "now"
+  },
+  {
+    "char": "前",
+    "pinyin": "qián",
+    "meaning": "front, before",
+    "example": "前面",
+    "examplePinyin": "qián miàn",
+    "exampleMeaning": "in front"
+  },
+  {
+    "char": "后",
+    "pinyin": "hòu",
+    "meaning": "after, behind",
+    "example": "后面",
+    "examplePinyin": "hòu miàn",
+    "exampleMeaning": "behind"
+  },
+  {
+    "char": "里",
+    "pinyin": "lǐ",
+    "meaning": "inside",
+    "example": "这里",
+    "examplePinyin": "zhè lǐ",
+    "exampleMeaning": "here"
+  },
+  {
+    "char": "面",
+    "pinyin": "miàn",
+    "meaning": "face, side, noodles",
+    "example": "下面",
+    "examplePinyin": "xià miàn",
+    "exampleMeaning": "below"
+  },
+  {
+    "char": "睡",
+    "pinyin": "shuì",
+    "meaning": "to sleep",
+    "example": "睡觉",
+    "examplePinyin": "shuì jiào",
+    "exampleMeaning": "to sleep"
+  },
+  {
+    "char": "觉",
+    "pinyin": "jiào",
+    "meaning": "sleep",
+    "example": "睡觉",
+    "examplePinyin": "shuì jiào",
+    "exampleMeaning": "to sleep"
+  },
+  {
+    "char": "衣",
+    "pinyin": "yī",
+    "meaning": "clothes",
+    "example": "衣服",
+    "examplePinyin": "yī fu",
+    "exampleMeaning": "clothes"
+  },
+  {
+    "char": "服",
+    "pinyin": "fú",
+    "meaning": "clothes, to serve",
+    "example": "衣服",
+    "examplePinyin": "yī fu",
+    "exampleMeaning": "clothes"
+  },
+  {
+    "char": "医",
+    "pinyin": "yī",
+    "meaning": "doctor, medicine",
+    "example": "医生",
+    "examplePinyin": "yī shēng",
+    "exampleMeaning": "doctor"
+  },
+  {
+    "char": "院",
+    "pinyin": "yuàn",
+    "meaning": "courtyard, institution",
+    "example": "医院",
+    "examplePinyin": "yī yuàn",
+    "exampleMeaning": "hospital"
+  },
+  {
+    "char": "店",
+    "pinyin": "diàn",
+    "meaning": "shop, store",
+    "example": "商店",
+    "examplePinyin": "shāng diàn",
+    "exampleMeaning": "shop"
+  },
+  {
+    "char": "商",
+    "pinyin": "shāng",
+    "meaning": "commerce",
+    "example": "商店",
+    "examplePinyin": "shāng diàn",
+    "exampleMeaning": "shop"
+  },
+  {
+    "char": "桌",
+    "pinyin": "zhuō",
+    "meaning": "table",
+    "example": "桌子",
+    "examplePinyin": "zhuō zi",
+    "exampleMeaning": "table"
+  },
+  {
+    "char": "椅",
+    "pinyin": "yǐ",
+    "meaning": "chair",
+    "example": "椅子",
+    "examplePinyin": "yǐ zi",
+    "exampleMeaning": "chair"
+  },
+  {
+    "char": "子",
+    "pinyin": "zi",
+    "meaning": "child, noun suffix",
+    "example": "孩子",
+    "examplePinyin": "hái zi",
+    "exampleMeaning": "child"
+  },
+  {
+    "char": "些",
+    "pinyin": "xiē",
+    "meaning": "some",
+    "example": "一些",
+    "examplePinyin": "yī xiē",
+    "exampleMeaning": "some, a few"
+  }
+];

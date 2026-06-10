@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "汉字 Trainer",
+    "slug": "hanzi-trainer",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#faf7f2"
+    },
+    "ios": {
+      "bundleIdentifier": "com.hanzitrainer.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.hanzitrainer.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#b91c1c"
+      }
+    },
+    "assetBundlePatterns": ["**/*"]
+  }
+}

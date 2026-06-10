@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#b91c1c">
+  <meta name="description" content="Learn Chinese characters with flashcards, spaced repetition, quizzes and stroke practice.">
+  <title>汉字 Trainer — Learn Chinese Characters</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1><span class="logo-char">学</span> 汉字 Trainer</h1>
+    <div class="streak" id="streak-badge" title="Daily streak">🔥 <span id="streak-count">0</span></div>
+  </header>
+
+  <main id="main">
+    <!-- TODAY -->
+    <section id="view-today" class="view active">
+      <div class="card daily-card">
+        <p class="card-label">Character of the day</p>
+        <p class="daily-char" id="daily-char">学</p>
+        <p class="daily-pinyin" id="daily-pinyin">xué</p>
+        <p class="daily-meaning" id="daily-meaning">to study</p>
+        <p class="daily-example" id="daily-example"></p>
+        <button class="btn btn-ghost" id="daily-speak">🔊 Listen</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><span class="stat-num" id="stat-due">0</span><span class="stat-label">due now</span></div>
+        <div class="stat-box"><span class="stat-num" id="stat-learned">0</span><span class="stat-label">learning</span></div>
+        <div class="stat-box"><span class="stat-num" id="stat-mastered">0</span><span class="stat-label">mastered</span></div>
+        <div class="stat-box"><span class="stat-num" id="stat-total">155</span><span class="stat-label">total</span></div>
+      </div>
+      <button class="btn btn-primary btn-big" id="start-review">Start review session</button>
+      <div class="card install-hint" id="install-hint" hidden>
+        <p>📱 <strong>Install this app:</strong> tap your browser menu → <em>Add to Home Screen</em> to use it like a real app, offline included.</p>
+        <button class="btn btn-ghost" id="install-btn" hidden>Install now</button>
+      </div>
+    </section>
+
+    <!-- LEARN (flashcards + SRS) -->
+    <section id="view-learn" class="view">
+      <div class="session-meta"><span id="session-progress"></span></div>
+      <div class="flashcard" id="flashcard">
+        <div class="flashcard-inner" id="flashcard-inner">
+          <div class="flashcard-front">
+            <p class="fc-char" id="fc-char">你</p>
+            <p class="fc-hint">tap to reveal</p>
+          </div>
+          <div class="flashcard-back">
+            <p class="fc-char-small" id="fc-char-back">你</p>
+            <p class="fc-pinyin" id="fc-pinyin">nǐ</p>
+            <p class="fc-meaning" id="fc-meaning">you</p>
+            <p class="fc-example" id="fc-example"></p>
+            <button class="btn btn-ghost btn-small" id="fc-speak">🔊</button>
+          </div>
+        </div>
+      </div>
+      <div class="grade-buttons" id="grade-buttons" hidden>
+        <button class="btn grade-again" data-grade="again">Again</button>
+        <button class="btn grade-hard" data-grade="hard">Hard</button>
+        <button class="btn grade-good" data-grade="good">Good</button>
+        <button class="btn grade-easy" data-grade="easy">Easy</button>
+      </div>
+      <div class="session-done" id="session-done" hidden>
+        <p class="done-emoji">🎉</p>
+        <p>All done for now! Come back when more cards are due.</p>
+        <button class="btn btn-primary" id="back-to-today">Back to Today</button>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="view-quiz" class="view">
+      <div id="quiz-setup">
+        <h2>Quiz yourself</h2>
+        <p class="muted">10 multiple-choice questions from the characters you've seen.</p>
+        <div class="quiz-modes">
+          <button class="btn btn-outline quiz-mode-btn" data-mode="char2meaning">字 → meaning</button>
+          <button class="btn btn-outline quiz-mode-btn" data-mode="char2pinyin">字 → pīnyīn</button>
+          <button class="btn btn-outline quiz-mode-btn" data-mode="meaning2char">meaning → 字</button>
+        </div>
+      </div>
+      <div id="quiz-play" hidden>
+        <div class="session-meta"><span id="quiz-progress"></span> · score <span id="quiz-score">0</span></div>
+        <p class="quiz-question" id="quiz-question">你</p>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+      <div id="quiz-result" hidden>
+        <p class="done-emoji" id="quiz-result-emoji">🏆</p>
+        <p class="quiz-final" id="quiz-final"></p>
+        <button class="btn btn-primary" id="quiz-again">Play again</button>
+      </div>
+    </section>
+
+    <!-- WRITE -->
+    <section id="view-write" class="view">
+      <h2>Stroke practice</h2>
+      <p class="muted">Trace the strokes in the correct order. <span id="write-offline-note" hidden>(Requires internet the first time to load stroke data.)</span></p>
+      <div class="write-controls">
+        <button class="btn btn-outline" id="write-prev">‹</button>
+        <span class="write-current" id="write-current">你</span>
+        <button class="btn btn-outline" id="write-next">›</button>
+      </div>
+      <div id="writer-target"></div>
+      <div class="write-actions">
+        <button class="btn btn-primary" id="write-quiz">✍️ Practice</button>
+        <button class="btn btn-ghost" id="write-animate">▶ Animate</button>
+      </div>
+      <p class="write-info" id="write-info"></p>
+    </section>
+
+    <!-- BROWSE -->
+    <section id="view-browse" class="view">
+      <input type="search" id="browse-search" class="search-input" placeholder="Search character, pinyin or meaning…">
+      <div class="browse-list" id="browse-list"></div>
+    </section>
+  </main>
+
+  <nav class="tab-bar">
+    <button class="tab active" data-view="today"><span>🏠</span>Today</button>
+    <button class="tab" data-view="learn"><span>🎴</span>Learn</button>
+    <button class="tab" data-view="quiz"><span>❓</span>Quiz</button>
+    <button class="tab" data-view="write"><span>✍️</span>Write</button>
+    <button class="tab" data-view="browse"><span>📚</span>Browse</button>
+  </nav>
+
+  <script src="js/data.js"></script>
+  <script src="js/srs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

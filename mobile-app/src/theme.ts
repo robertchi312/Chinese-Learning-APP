@@ -1,0 +1,16 @@
+export const colors = {
+  red: '#b91c1c',
+  redDark: '#991b1b',
+  bg: '#faf7f2',
+  card: '#ffffff',
+  ink: '#1f2937',
+  muted: '#6b7280',
+  border: '#e5e7eb',
+  green: '#16a34a',
+  greenBg: '#dcfce7',
+  orangeBg: '#ffedd5',
+  orange: '#c2410c',
+  redBg: '#fee2e2',
+  blueBg: '#dbeafe',
+  blue: '#1d4ed8',
+};

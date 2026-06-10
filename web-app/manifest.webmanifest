@@ -1,0 +1,24 @@
+{
+  "name": "汉字 Trainer — Learn Chinese Characters",
+  "short_name": "汉字 Trainer",
+  "description": "Learn Chinese characters with spaced-repetition flashcards, quizzes and stroke practice.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf7f2",
+  "theme_color": "#b91c1c",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start review",
+      "short_name": "Review",
+      "description": "Jump straight into today's flashcard review",
+      "url": "./index.html#learn",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
