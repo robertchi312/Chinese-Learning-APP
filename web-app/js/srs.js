@@ -9,16 +9,19 @@ const SRS = (() => {
   // Interval per level: level 0 = brand new (due immediately).
   const INTERVALS = [0, 4 * HOUR, 8 * HOUR, 1 * DAY, 2 * DAY, 4 * DAY, 7 * DAY, 14 * DAY, 30 * DAY];
   const MASTERED_LEVEL = 6;
-  const NEW_PER_SESSION = 10;
+  const NEW_PER_DAY = 10; // cap on brand-new characters per day, not per session
   const STORAGE_KEY = 'hanzi-trainer-srs-v1';
+
+  const DEFAULTS = { cards: {}, lastStudyDay: null, streak: 0, newDay: { date: null, count: 0 } };
 
   let state = load();
 
   function load() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { cards: {}, lastStudyDay: null, streak: 0 };
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      return { ...DEFAULTS, ...stored, newDay: stored.newDay || { ...DEFAULTS.newDay } };
     } catch {
-      return { cards: {}, lastStudyDay: null, streak: 0 };
+      return { ...DEFAULTS, newDay: { ...DEFAULTS.newDay } };
     }
   }
 
@@ -37,11 +40,18 @@ const SRS = (() => {
     });
   }
 
-  function newCards(allChars, limit = NEW_PER_SESSION) {
+  // How many brand-new characters may still be introduced today.
+  function newCardsRemaining(now = Date.now()) {
+    const today = new Date(now).toDateString();
+    if (state.newDay.date !== today) return NEW_PER_DAY;
+    return Math.max(0, NEW_PER_DAY - state.newDay.count);
+  }
+
+  function newCards(allChars, limit = newCardsRemaining()) {
     return allChars.filter(c => !state.cards[c.char]).slice(0, limit);
   }
 
-  // Build a review queue: everything due, plus up to `limit` unseen cards.
+  // Build a review queue: everything due, plus today's remaining unseen cards.
   function buildQueue(allChars) {
     const due = dueCards(allChars);
     const fresh = newCards(allChars);
@@ -49,6 +59,15 @@ const SRS = (() => {
   }
 
   function grade(char, grade, now = Date.now()) {
+    const isNew = !state.cards[char];
+    if (isNew) {
+      const today = new Date(now).toDateString();
+      if (state.newDay.date !== today) {
+        state.newDay.date = today;
+        state.newDay.count = 0;
+      }
+      state.newDay.count += 1;
+    }
     const card = state.cards[char] || { level: 0, due: now, seen: 0 };
     card.seen += 1;
     if (grade === 'again') {

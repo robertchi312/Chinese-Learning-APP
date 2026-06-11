@@ -46,6 +46,9 @@ html[data-theme="dark"] {
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* The hidden attribute must win over any component display value. */
+[hidden] { display: none !important; }
+
 html { background: var(--paper); }
 
 body {
@@ -348,6 +351,11 @@ h2 {
 }
 .btn-primary:active { box-shadow: 0 1px 0 var(--seal); }
 .btn-big { width: 100%; padding: 16px; font-size: 1.05rem; }
+.btn.pulse { animation: gentle-pulse 2.2s ease-in-out infinite; }
+@keyframes gentle-pulse {
+  0%, 100% { box-shadow: 0 3px 0 color-mix(in srgb, var(--seal) 80%, black 8%), 0 0 0 0 color-mix(in srgb, var(--vermillion) 35%, transparent); }
+  50% { box-shadow: 0 3px 0 color-mix(in srgb, var(--seal) 80%, black 8%), 0 0 0 12px transparent; }
+}
 .btn-ghost { background: transparent; color: var(--vermillion); }
 .btn-outline { background: var(--paper-raised); border: 1.5px solid var(--border); color: var(--ink); }
 .btn-small { padding: 6px 12px; font-size: 0.9rem; }
@@ -449,8 +457,8 @@ h2 {
   transform: rotate(-1deg);
 }
 
-.grade-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.grade-buttons .btn { padding: 13px 4px; font-size: 0.95rem; }
+.grade-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.grade-buttons .btn { padding: 15px 4px; font-size: 1.05rem; }
 .grade-again { background: var(--vermillion-soft); color: var(--vermillion); }
 .grade-hard { background: var(--gold-soft); color: var(--gold); }
 .grade-good { background: var(--jade-soft); color: var(--jade); }

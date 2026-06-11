@@ -13,7 +13,7 @@ const Adaptive = (() => {
   const ALPHA = 0.2; // EWMA weight of the newest outcome
   const MIN_ATTEMPTS = 3; // below this, accuracy falls back to the 0.5 prior
   const WEIGHT_FLOOR = 0.15; // keeps strong skills in rotation
-  const DEFAULT_GOAL = 20;
+  const DEFAULT_GOAL = 10; // deliberately small — one tiny session a day
 
   const SKILL_LABELS = {
     recognition: { label: 'Recognizing', icon: '👀', desc: 'character → meaning' },

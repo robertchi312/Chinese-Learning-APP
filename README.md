@@ -1,5 +1,9 @@
 # 汉字 Trainer — Learn Chinese Characters
 
+> **The science does the work, not the user.** Zero friction to start, no
+> discipline required — the evidence-based mechanics are baked into the
+> design. Read the full [product philosophy](PHILOSOPHY.md).
+
 Two complete apps for learning Chinese characters, sharing one dataset of
 **155 HSK-1 level characters** (with pinyin, meanings, and example words):
 

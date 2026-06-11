@@ -100,14 +100,19 @@ function renderToday() {
   $('stat-total').textContent = s.total;
   $('streak-count').textContent = s.streak;
 
-  // mascot + bubble
+  // mascot + bubble — first-time users get a "this is easy" welcome
   const queueEmpty = SRS.buildQueue(CHARACTERS).length === 0;
+  const isNewUser = s.learning + s.mastered === 0;
   $('mascot-today').innerHTML = UI.mascot(queueEmpty ? 'sleepy' : 'happy', 78);
   $('mascot-bubble').textContent = queueEmpty
     ? 'Nothing due — nap time! Come back later.'
-    : s.due > 0
-      ? `${s.due} card${s.due === 1 ? '' : 's'} ready for review — let's go!`
-      : BUBBLE_LINES[Math.floor(Math.random() * BUBBLE_LINES.length)];
+    : isNewUser
+      ? 'No setup, no pressure. Tap the red button and you\'re learning — two minutes.'
+      : s.due > 0
+        ? `${s.due} card${s.due === 1 ? '' : 's'} ready for review — let's go!`
+        : BUBBLE_LINES[Math.floor(Math.random() * BUBBLE_LINES.length)];
+  $('start-smart').textContent = isNewUser ? '▶ Start learning · ~2 min' : '✨ Smart session · ~2 min';
+  $('start-smart').classList.toggle('pulse', isNewUser);
 
   renderGoalRing();
   renderInsights();
@@ -160,8 +165,12 @@ const SKILL_TAGS = {
 
 let session = null;
 
+// Sessions are deliberately bite-sized: a couple of minutes, then a clean
+// stopping point. If more cards are waiting, the summary offers another round.
+const SESSION_CAP = 15;
+
 function startSession(smart) {
-  const queue = shuffle(SRS.buildQueue(CHARACTERS));
+  const queue = shuffle(SRS.buildQueue(CHARACTERS)).slice(0, SESSION_CAP);
   session = {
     smart,
     queue,
@@ -351,14 +360,21 @@ function finishSession() {
   seal.style.animation = '';
 
   const weakest = Adaptive.weakestSkill();
+  const { done, goal } = Adaptive.dailyProgress();
   if (reviewed === 0) {
     $('summary-tip').textContent = 'Nothing due right now — the spacing is doing its job. Come back later!';
+  } else if (done >= goal) {
+    $('summary-title').textContent = 'Daily goal hit! 🎯';
+    $('summary-tip').textContent = 'That\'s genuinely enough for today — short and regular beats long and rare. See you tomorrow!';
   } else if (weakest) {
     const label = Adaptive.summary().find(s => s.skill === weakest).label.toLowerCase();
     $('summary-tip').textContent = `Your wobbliest skill right now is ${label} — the next smart session will lean into it. 💪`;
   } else {
     $('summary-tip').textContent = 'Great start! As you practice, sessions will tune themselves to how you learn.';
   }
+
+  // More cards waiting? Offer one more bite — never demand it.
+  $('another-round').hidden = SRS.buildQueue(CHARACTERS).length === 0 || reviewed === 0;
 
   const streakNow = SRS.stats(CHARACTERS).streak;
   if (session && streakNow !== session.streakAtStart && [7, 30, 100].includes(streakNow)) {
@@ -368,6 +384,7 @@ function finishSession() {
 }
 
 $('back-to-today').addEventListener('click', () => showView('today'));
+$('another-round').addEventListener('click', () => startSession(true));
 
 /* ---------- Quiz ---------- */
 const QUIZ_LEN = 10;

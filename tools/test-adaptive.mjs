@@ -106,7 +106,7 @@ test('goal is clamped and persisted', () => {
 test('corrupt JSON recovers to a fresh profile', () => {
   Adaptive._setStorage(memStorage({ 'hanzi-trainer-profile-v1': '{not json!!' }));
   assert.equal(Adaptive.acc('recognition'), 0.5);
-  assert.equal(Adaptive.dailyProgress().goal, 20);
+  assert.equal(Adaptive.dailyProgress().goal, 10);
 });
 
 test('theme pref round-trip', () => {
@@ -158,6 +158,22 @@ test('pre-existing hanzi-trainer-srs-v1 blob: stats() and buildQueue() behave as
   assert.ok(queue.some((c) => c.char === '不'), 'due card in queue');
   assert.ok(queue.some((c) => c.char === '大'), 'new card in queue');
   assert.ok(!queue.some((c) => c.char === '好'), 'mastered/not-due card excluded');
+  delete global.localStorage;
+});
+
+test('new characters are capped per day (the app decides when you are done)', () => {
+  global.localStorage = memStorage();
+  const fs = require('node:fs');
+  const src = fs
+    .readFileSync(join(root, 'web-app/js/srs.js'), 'utf8')
+    .replace('const SRS', 'globalThis.SRS_TEST2');
+  eval(src);
+  const SRS = globalThis.SRS_TEST2;
+  const all = Array.from({ length: 30 }, (_, i) => ({ char: `c${i}` }));
+
+  assert.equal(SRS.buildQueue(all).length, 10, 'fresh user gets 10 new cards');
+  for (const c of SRS.buildQueue(all)) SRS.grade(c.char, 'good');
+  assert.equal(SRS.buildQueue(all).length, 0, 'daily new-card budget spent — done for today');
   delete global.localStorage;
 });
 

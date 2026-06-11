@@ -75,13 +75,17 @@
         <div class="stat-box"><span class="stat-num" id="stat-total">155</span><span class="stat-label">total</span></div>
       </div>
 
-      <button class="btn btn-primary btn-big" id="start-smart">✨ Smart session</button>
-      <p class="muted" style="text-align:center; margin-top:8px; margin-bottom:0">
-        Mixes flashcards &amp; quizzes, tuned to how <em>you</em> learn best.
+      <button class="btn btn-primary btn-big" id="start-smart">✨ Smart session · ~2 min</button>
+      <p class="muted" style="text-align:center; margin-top:8px; margin-bottom:0" id="cta-subtitle">
+        No decisions needed — the app picks what's worth practicing, and how.
       </p>
 
       <details class="insights card" id="insights">
         <summary>🧠 How you learn</summary>
+        <p class="muted" style="margin-top:10px; margin-bottom:0">
+          You don't have to study "the right way" — the app quietly handles
+          that for you. Here's what it has noticed so far:
+        </p>
         <div class="skill-rows" id="skill-rows"></div>
         <div class="science-tip" id="science-tip"></div>
       </details>
@@ -126,10 +130,8 @@
         </div>
       </div>
       <div class="grade-buttons" id="grade-buttons" hidden>
-        <button class="btn grade-again" data-grade="again">Again</button>
-        <button class="btn grade-hard" data-grade="hard">Hard</button>
-        <button class="btn grade-good" data-grade="good">Good</button>
-        <button class="btn grade-easy" data-grade="easy">Easy</button>
+        <button class="btn grade-again" data-grade="again">Not yet</button>
+        <button class="btn grade-good" data-grade="good">Got it ✓</button>
       </div>
 
       <!-- session summary -->
@@ -144,7 +146,8 @@
           </div>
           <p class="summary-tip" id="summary-tip"></p>
         </div>
-        <button class="btn btn-primary" id="back-to-today">Back to Today</button>
+        <button class="btn btn-outline btn-big" id="another-round" hidden style="margin-bottom:10px">One more quick round?</button>
+        <button class="btn btn-primary" id="back-to-today">Done for now</button>
       </div>
     </section>
 
