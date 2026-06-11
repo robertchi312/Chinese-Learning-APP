@@ -9,15 +9,26 @@ Two complete apps for learning Chinese characters, sharing one dataset of
 | 📱 **Mobile app** | [`mobile-app/`](mobile-app/) | Expo / React Native — builds into a **real iOS & Android app** with **native home-screen widgets** | The "real app" experience |
 | 📦 **Shared data** | [`shared/`](shared/) | The character dataset both apps are generated from | Adding more characters |
 
-Both apps have the same features, so you can switch between them and the
-learning approach stays consistent:
+Core features (the web app additionally has the full "Ink & Paper" design and
+the adaptive engine — the mobile app gets them in a follow-up pass):
 
+- ✨ **Smart sessions (web)** — an adaptive engine tracks your accuracy across
+  five skills (recognizing, pronouncing, listening, recalling, writing) and
+  automatically mixes practice toward your weak spots
+- 🧠 **"How you learn" insights (web)** — your skill profile with
+  plain-English notes on the science (spaced repetition, retrieval practice,
+  interleaving, dual coding)
 - 🎴 **Flashcards with spaced repetition** — cards you find hard come back
   sooner; cards you know well come back in days, then weeks (simplified SM-2)
-- ❓ **Quizzes** — character → meaning, character → pinyin, meaning → character
+- 💭 **Memory stories & component breakdowns** for every character
+  (好 = 女 woman + 子 child: "A woman with her child — what could be more good?")
+- ❓ **Quizzes** — char → meaning, char → pinyin, 🔊 audio → char (web),
+  meaning → char
 - ✍️ **Stroke practice** — trace strokes in the correct order (Hanzi Writer)
-- 📚 **Browse & search** all 155 characters with your progress shown per character
-- 🗓️ **Character of the day** + 🔥 daily streak tracking
+- 📚 **Browse & search** all 155 characters with your progress per character
+- 🗓️ **Character of the day**, 🔥 streaks, 🎯 daily goal ring (web)
+- 🐼 A supportive panda mascot, confetti on milestones, and a "night ink"
+  dark mode (web)
 - 🔊 **Pronunciation audio** (text-to-speech)
 - 🏠 **Home-screen widget**: native Android & iOS widgets in the mobile app
   showing the character of the day (the PWA shows the same daily character on
@@ -50,12 +61,19 @@ same character with zero syncing or networking.
 
 ## Adding more characters
 
-Edit `shared/characters.json`, then regenerate the per-app data files
-(`web-app/js/data.js`, `mobile-app/src/data/characters.ts`,
-`mobile-app/widgets/ios/CharacterData.swift`,
-`mobile-app/widgets/android/assets/characters.json`) — each file notes that it
-is generated. A future improvement is a small build script that does this
-automatically.
+Edit `shared/characters.json` (each entry needs char, pinyin, meaning, an
+example word, components and a mnemonic), then run `node tools/build-data.mjs`
+to regenerate `web-app/js/data.js`. The mobile data files
+(`mobile-app/src/data/characters.ts`, the widget assets) are generated from
+the same JSON — regenerating those automatically is a planned improvement.
+
+## Development tools
+
+```bash
+node tools/build-data.mjs     # regenerate web data from shared/characters.json
+node tools/test-adaptive.mjs  # adaptive-engine + SRS logic tests
+node tools/snapshot.mjs       # Playwright screenshots of every view (needs playwright)
+```
 
 ## Roadmap ideas
 

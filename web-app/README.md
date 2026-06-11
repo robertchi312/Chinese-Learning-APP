@@ -30,16 +30,30 @@ Any static host works. Easiest: **GitHub Pages** —
 repo Settings → Pages → deploy from branch, folder `/web-app`.
 Or drag the folder into Netlify / Vercel.
 
+## How the adaptive engine works
+
+The app tracks your accuracy on five skills — recognizing, pronouncing,
+listening, recalling and writing — as an exponentially-weighted moving
+average. **Smart sessions** keep the spaced-repetition scheduler in charge of
+*which* characters you see, but pick *how* each one is practiced by sampling
+skills weighted toward your weak spots (with a floor so strong skills stay in
+rotation — that's interleaving). The "How you learn" panel on Today shows your
+live profile. Until a skill has 3 attempts it sits at a neutral prior, so the
+app doesn't overreact to your first few answers.
+
 ## Files
 
 | File | Purpose |
 |---|---|
 | `index.html` | All five views (Today / Learn / Quiz / Write / Browse) |
-| `js/data.js` | Character data (generated from `../shared/characters.json`) |
+| `css/style.css` | "Ink & Paper" design system (tokens, night-ink dark mode) |
+| `js/data.js` | Character data — generated, run `node ../tools/build-data.mjs` |
 | `js/srs.js` | Spaced-repetition scheduler + progress storage (localStorage) |
-| `js/app.js` | App logic: flashcards, quiz, stroke practice, browse, install prompt |
+| `js/adaptive.js` | Adaptive engine: skill tracking, session weighting, daily goal |
+| `js/ui.js` | Panda mascot, theme toggle, confetti, count-up animations |
+| `js/app.js` | App logic: smart sessions, flashcards, quizzes, stroke practice |
 | `sw.js` | Service worker — offline caching |
-| `manifest.webmanifest` | PWA manifest (icons, name, home-screen shortcut) |
+| `manifest.webmanifest` | PWA manifest (icons, name, home-screen shortcuts) |
 
 ## A note on widgets
 
