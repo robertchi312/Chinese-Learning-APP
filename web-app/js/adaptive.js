@@ -103,6 +103,14 @@ const Adaptive = (() => {
     return st;
   }
 
+  // Count an item toward the daily bite without recording a skill —
+  // used for "meet cards" (first encounters), where no retrieval happened.
+  function bumpDaily(now = Date.now()) {
+    rolloverDaily(now);
+    state.daily.done += 1;
+    save();
+  }
+
   // Map a flashcard SRS grade to an outcome for the recognition skill.
   const GRADE_OUTCOME = { again: 0, hard: 0.4, good: 0.85, easy: 1.0 };
   function recordGrade(grade, now = Date.now()) {
@@ -209,6 +217,7 @@ const Adaptive = (() => {
     SKILLS,
     record,
     recordGrade,
+    bumpDaily,
     acc,
     skillWeights,
     pickSkill,

@@ -13,30 +13,27 @@ Two complete apps for learning Chinese characters, sharing one dataset of
 | 📱 **Mobile app** | [`mobile-app/`](mobile-app/) | Expo / React Native — builds into a **real iOS & Android app** with **native home-screen widgets** | The "real app" experience |
 | 📦 **Shared data** | [`shared/`](shared/) | The character dataset both apps are generated from | Adding more characters |
 
-Core features (the web app additionally has the full "Ink & Paper" design and
-the adaptive engine — the mobile app gets them in a follow-up pass):
+**The product, in one line:** open the app and a flashcard is already there —
+tap to flip, "Not yet / Got it", next card, close whenever. One learning
+channel; everything else supports it.
 
-- ✨ **Smart sessions (web)** — an adaptive engine tracks your accuracy across
-  five skills (recognizing, pronouncing, listening, recalling, writing) and
-  automatically mixes practice toward your weak spots
-- 🧠 **"How you learn" insights (web)** — your skill profile with
-  plain-English notes on the science (spaced repetition, retrieval practice,
-  interleaving, dual coding)
-- 🎴 **Flashcards with spaced repetition** — cards you find hard come back
-  sooner; cards you know well come back in days, then weeks (simplified SM-2)
-- 💭 **Memory stories & component breakdowns** for every character
-  (好 = 女 woman + 子 child: "A woman with her child — what could be more good?")
-- ❓ **Quizzes** — char → meaning, char → pinyin, 🔊 audio → char (web),
-  meaning → char
-- ✍️ **Stroke practice** — trace strokes in the correct order (Hanzi Writer)
-- 📚 **Browse & search** all 155 characters with your progress per character
-- 🗓️ **Character of the day**, 🔥 streaks, 🎯 daily goal ring (web)
-- 🐼 A supportive panda mascot, confetti on milestones, and a "night ink"
-  dark mode (web)
-- 🔊 **Pronunciation audio** (text-to-speech)
-- 🏠 **Home-screen widget**: native Android & iOS widgets in the mobile app
-  showing the character of the day (the PWA shows the same daily character on
-  its Today tab)
+- 🎴 **The Deck** — the only place learning happens. One gesture
+  (tap-flip-judge), but the card front rotates between character, audio and
+  meaning, picked invisibly by an adaptive engine that tracks five skills
+  (recognizing, pronouncing, listening, recalling, writing) and leans toward
+  your weak spots
+- ✨ **Meet cards** — new characters introduce themselves (story, components,
+  audio) before they quiz you; 10 new per day max, then the app tells you
+  you're done
+- 🗓️ **Character of the day** — on the Me tab, in the widget, and (next
+  milestone) on your actual home screen via native widgets
+- 📚 **Characters** — searchable reference list; tap any character anywhere
+  for its detail sheet: memory story, component breakdown
+  (好 = 女 woman + 子 child), stroke practice, audio
+- 🐼 **Me** — streak, daily goal, progress stats, and the "How you learn"
+  skill profile with plain-English science notes
+- 🌙 Night-ink dark mode, confetti on milestones, offline-capable PWA,
+  progress stored privately on-device
 
 ## Quick start (60 seconds)
 

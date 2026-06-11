@@ -1,5 +1,7 @@
-// 汉字 Trainer — main app logic.
-// Views: Today, Learn (smart session / classic flashcards), Quiz, Write, Browse.
+// 汉字 Trainer — "The Deck".
+// One learning channel: open the app, a card is already there.
+// Tap to flip, judge yourself, next card. Close whenever.
+// Characters (list) and Me (dashboard) are reference surfaces only.
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -21,46 +23,22 @@ function hasZhVoice() {
   return speechSynthesis.getVoices().some(v => v.lang.startsWith('zh'));
 }
 
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function dayOfYear(date = new Date()) {
   const start = new Date(date.getFullYear(), 0, 0);
   return Math.floor((date - start) / 86400000);
 }
 
+function dailyCharacter() {
+  return CHARACTERS[dayOfYear() % CHARACTERS.length];
+}
+
 function componentChips(c) {
   return c.components
     .map(p => `<span class="comp-chip"><span class="hanzi">${p.c}</span>${p.gloss}</span>`)
-    .join('<span class="comp-chip" style="border:none;background:none;padding:0 2px">+</span>');
+    .join('<span class="comp-chip comp-plus">+</span>');
 }
 
-/* ---------- navigation ---------- */
-const tabs = document.querySelectorAll('.tab');
-tabs.forEach(tab => tab.addEventListener('click', () => showView(tab.dataset.view)));
-
-function showView(name, opts = {}) {
-  const swap = () => {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    $(`view-${name}`).classList.add('active');
-    tabs.forEach(t => t.classList.toggle('active', t.dataset.view === name));
-  };
-  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.startViewTransition(swap);
-  } else {
-    swap();
-  }
-  if (name === 'today') renderToday();
-  if (name === 'learn') startSession(opts.smart ?? true);
-  if (name === 'browse') renderBrowse($('browse-search').value);
-  if (name === 'write') initWriter();
-}
+const byChar = Object.fromEntries(CHARACTERS.map(c => [c.char, c]));
 
 /* ---------- theme ---------- */
 UI.applyTheme(Adaptive.getPref('theme') || 'auto');
@@ -71,118 +49,58 @@ $('theme-toggle').addEventListener('click', () => {
   UI.applyTheme(next);
 });
 
-/* ---------- Today ---------- */
-const BUBBLE_LINES = [
-  'Ready when you are!',
-  'One character at a time. 加油!',
-  'Your brain loves a good challenge.',
-  'Small steps, big 汉字 energy.',
-  'The best time to review was yesterday. The second best is now!',
-  'Panda believes in you. Panda is rarely wrong.',
-];
+/* ---------- tabs ---------- */
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(tab => tab.addEventListener('click', () => showView(tab.dataset.view)));
 
-function dailyCharacter() {
-  return CHARACTERS[dayOfYear() % CHARACTERS.length];
+function showView(name) {
+  const swap = () => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    $(`view-${name}`).classList.add('active');
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.view === name));
+  };
+  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.startViewTransition(swap);
+  } else {
+    swap();
+  }
+  if (name === 'learn') showNext();
+  if (name === 'chars') renderBrowse($('browse-search').value);
+  if (name === 'me') renderMe();
 }
 
-function renderToday() {
-  const d = dailyCharacter();
-  $('daily-card').dataset.watermark = d.char;
-  $('daily-char').textContent = d.char;
-  $('daily-pinyin').textContent = d.pinyin;
-  $('daily-meaning').textContent = d.meaning;
-  $('daily-example').textContent = `${d.example} (${d.examplePinyin}) — ${d.exampleMeaning}`;
-
-  const s = SRS.stats(CHARACTERS);
-  UI.countUp($('stat-due'), s.due);
-  UI.countUp($('stat-learned'), s.learning);
-  UI.countUp($('stat-mastered'), s.mastered);
-  $('stat-total').textContent = s.total;
-  $('streak-count').textContent = s.streak;
-
-  // mascot + bubble — first-time users get a "this is easy" welcome
-  const queueEmpty = SRS.buildQueue(CHARACTERS).length === 0;
-  const isNewUser = s.learning + s.mastered === 0;
-  $('mascot-today').innerHTML = UI.mascot(queueEmpty ? 'sleepy' : 'happy', 78);
-  $('mascot-bubble').textContent = queueEmpty
-    ? 'Nothing due — nap time! Come back later.'
-    : isNewUser
-      ? 'No setup, no pressure. Tap the red button and you\'re learning — two minutes.'
-      : s.due > 0
-        ? `${s.due} card${s.due === 1 ? '' : 's'} ready for review — let's go!`
-        : BUBBLE_LINES[Math.floor(Math.random() * BUBBLE_LINES.length)];
-  $('start-smart').textContent = isNewUser ? '▶ Start learning · ~2 min' : '✨ Smart session · ~2 min';
-  $('start-smart').classList.toggle('pulse', isNewUser);
-
-  renderGoalRing();
-  renderInsights();
-}
-
-function renderGoalRing() {
+/* ---------- header chips ---------- */
+function updateChips() {
   const { done, goal } = Adaptive.dailyProgress();
-  const C = 2 * Math.PI * 40;
-  const frac = Math.min(1, done / goal);
-  $('goal-ring-fill').style.strokeDashoffset = C * (1 - frac);
-  $('goal-done').textContent = done;
-  $('goal-target').textContent = goal;
+  $('daily-done').textContent = done;
+  $('daily-goal').textContent = goal;
+  $('daily-chip').classList.toggle('goal-met', done >= goal);
+  $('streak-count').textContent = SRS.stats(CHARACTERS).streak;
 }
 
-$('goal-ring-wrap').addEventListener('click', () => {
+$('daily-chip').addEventListener('click', () => {
   const current = Adaptive.dailyProgress().goal;
   const input = prompt('Daily goal (cards per day):', current);
   if (input === null) return;
   const n = parseInt(input, 10);
   if (!isNaN(n)) {
     Adaptive.setGoal(n);
-    renderGoalRing();
+    updateChips();
   }
 });
 
-function renderInsights() {
-  const rows = Adaptive.summary().map(s => {
-    const pct = Math.round(s.accuracy * 100);
-    return `
-      <div class="skill-row" title="${s.desc}">
-        <span class="skill-name">${s.icon} ${s.label}</span>
-        <div class="skill-bar"><div class="skill-bar-fill ${s.accuracy >= 0.75 ? 'strong' : ''}"
-             style="width:${s.hasData ? pct : 0}%"></div></div>
-        <span class="skill-pct">${s.hasData ? pct + '%' : '· · ·'}</span>
-      </div>`;
-  }).join('');
-  $('skill-rows').innerHTML = rows;
-  $('science-tip').textContent = '🔬 ' + Adaptive.scienceTip();
-}
-
-$('daily-speak').addEventListener('click', () => speak(dailyCharacter().char));
-$('start-smart').addEventListener('click', () => showView('learn', { smart: true }));
-
-/* ---------- Learn (smart session / classic flashcards) ---------- */
-const SKILL_TAGS = {
-  pronunciation: '🗣️ how is it said?',
-  listening: '👂 what did you hear?',
-  production: '💡 which character?',
+/* ============================================================
+   THE DECK
+   ============================================================ */
+const SKILL_FRONTS = {
+  recognition: { tag: '👀 what does it mean?' },
+  pronunciation: { tag: '🗣️ how do you say it?' },
+  listening: { tag: '👂 what did you hear?' },
+  production: { tag: '💡 picture the character' },
 };
 
-let session = null;
-
-// Sessions are deliberately bite-sized: a couple of minutes, then a clean
-// stopping point. If more cards are waiting, the summary offers another round.
-const SESSION_CAP = 15;
-
-function startSession(smart) {
-  const queue = shuffle(SRS.buildQueue(CHARACTERS)).slice(0, SESSION_CAP);
-  session = {
-    smart,
-    queue,
-    total: queue.length,
-    attempts: 0,
-    correct: 0,
-    locked: false,
-    goalAtStart: Adaptive.dailyProgress(),
-    streakAtStart: SRS.stats(CHARACTERS).streak,
-  };
-  nextItem();
-}
+let current = null; // { c, skill } — skill === 'meet' for first encounters
+let lastChar = null;
 
 function availableSkills() {
   const skills = ['recognition', 'pronunciation', 'production'];
@@ -190,391 +108,188 @@ function availableSkills() {
   return skills;
 }
 
-function nextItem() {
-  $('grade-buttons').hidden = true;
-  $('flashcard').hidden = true;
-  $('smart-question').hidden = true;
-  $('flashcard').classList.remove('flipped');
+// The SRS state is the stream — no session queue.
+function pickNext() {
+  const queue = SRS.buildQueue(CHARACTERS);
+  const due = queue.filter(c => SRS.getCard(c.char));
+  const fresh = queue.filter(c => !SRS.getCard(c.char));
+  if (due.length) {
+    // Random among due, avoiding an immediate repeat when there's a choice.
+    const pool = due.length > 1 ? due.filter(c => c.char !== lastChar) : due;
+    return { c: pool[Math.floor(Math.random() * pool.length)], isNew: false };
+  }
+  // New characters arrive in dataset order — a sensible gentle progression.
+  if (fresh.length) return { c: fresh[0], isNew: true };
+  return null;
+}
 
-  if (!session || !session.queue.length) {
-    finishSession();
+function showNext() {
+  $('meet-card').hidden = true;
+  $('quiz-card').hidden = true;
+  $('judge').hidden = true;
+  $('caught-up').hidden = true;
+
+  const next = pickNext();
+  if (!next) {
+    current = null;
+    renderCaughtUp();
     return;
   }
-  $('session-done').hidden = true;
-  const current = session.queue[0];
-  $('session-progress').textContent = `${session.total - session.queue.length + 1} / ${session.total}`;
-
-  const card = SRS.getCard(current.char);
-  // Unseen characters always start as a flashcard so there's something to learn from.
-  const skill = session.smart && card ? Adaptive.pickSkill(availableSkills()) : 'recognition';
-
-  if (skill === 'recognition') showFlashcard(current);
-  else showSmartQuestion(current, skill);
+  if (next.isNew) renderMeet(next.c);
+  else renderQuiz(next.c, Adaptive.pickSkill(availableSkills()));
 }
 
-/* --- flashcard presentation --- */
-function showFlashcard(c) {
-  const fc = $('flashcard');
-  fc.hidden = false;
-  fc.classList.remove('flipped');
-  // Delay back-face update so the answer doesn't flash mid-flip.
-  setTimeout(() => {
-    $('fc-char').textContent = c.char;
-    $('fc-char-back').textContent = c.char;
-    $('fc-pinyin').textContent = c.pinyin;
-    $('fc-meaning').textContent = c.meaning;
-    $('fc-example').textContent = `${c.example} (${c.examplePinyin}) — ${c.exampleMeaning}`;
-    $('fc-components').innerHTML = componentChips(c);
-    $('fc-mnemonic').textContent = c.mnemonic;
-  }, 60);
+/* --- meet card: first encounter, no quiz --- */
+function renderMeet(c) {
+  current = { c, skill: 'meet' };
+  $('meet-char').textContent = c.char;
+  $('meet-pinyin').textContent = c.pinyin;
+  $('meet-meaning').textContent = c.meaning;
+  $('meet-components').innerHTML = componentChips(c);
+  $('meet-mnemonic').textContent = c.mnemonic;
+  $('meet-example').textContent = `${c.example} (${c.examplePinyin}) — ${c.exampleMeaning}`;
+  $('meet-card').hidden = false;
 }
 
-$('flashcard').addEventListener('click', () => {
-  const fc = $('flashcard');
-  if (!fc.classList.contains('flipped')) {
-    fc.classList.add('flipped');
-    $('grade-buttons').hidden = false;
-  }
+$('meet-speak').addEventListener('click', () => current && speak(current.c.char));
+$('meet-next').addEventListener('click', () => {
+  if (!current) return;
+  // 'again' leaves the card due immediately, so the first real retrieval
+  // happens right after meeting it — encode, then test.
+  SRS.grade(current.c.char, 'again');
+  Adaptive.bumpDaily();
+  lastChar = null; // allow the just-met card to come straight back as a quiz
+  afterProgress();
+  showNext();
 });
 
-document.querySelectorAll('#grade-buttons .btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (!session || !session.queue.length) return;
-    const current = session.queue.shift();
-    const g = btn.dataset.grade;
-    SRS.grade(current.char, g);
-    Adaptive.recordGrade(g);
-    session.attempts++;
-    if (g === 'good' || g === 'easy') session.correct++;
-    if (g === 'again') requeue(current);
-    checkGoalCrossed();
-    nextItem();
-  });
-});
+/* --- quiz card: tap-flip-judge, varied fronts --- */
+function renderQuiz(c, skill) {
+  current = { c, skill };
+  const card = $('quiz-card');
 
-$('fc-speak').addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (session && session.queue.length) speak(session.queue[0].char);
-});
+  // Reset the flip without animating backwards in view.
+  const inner = card.querySelector('.flashcard-inner');
+  inner.style.transition = 'none';
+  card.classList.remove('flipped');
+  void inner.offsetWidth;
+  inner.style.transition = '';
 
-/* --- inline smart question --- */
-function answerTextOf(skill, c) {
-  return skill === 'pronunciation' ? c.pinyin : c.char;
-}
+  $('front-tag').textContent = SKILL_FRONTS[skill].tag;
+  $('front-char').hidden = true;
+  $('front-audio').hidden = true;
+  $('front-fallback').hidden = true;
+  $('front-text').hidden = true;
 
-function showSmartQuestion(q, skill) {
-  const wrap = $('smart-question');
-  wrap.hidden = false;
-  session.locked = false;
-  $('smart-skill-tag').textContent = SKILL_TAGS[skill];
-
-  const questionEl = $('smart-q-text');
-  const audioWrap = $('smart-q-audio-wrap');
-  questionEl.classList.remove('text-question');
-  audioWrap.hidden = true;
-
-  if (skill === 'pronunciation') {
-    questionEl.textContent = q.char;
+  if (skill === 'listening') {
+    $('front-audio').hidden = false;
+    $('front-fallback').hidden = hasZhVoice();
+    $('front-fallback').textContent = `Can't hear it? It reads: ${c.pinyin}`;
+    speak(c.char);
   } else if (skill === 'production') {
-    questionEl.textContent = q.meaning;
-    questionEl.classList.add('text-question');
-  } else { // listening
-    questionEl.textContent = '';
-    audioWrap.hidden = false;
-    $('smart-q-fallback').hidden = hasZhVoice();
-    $('smart-q-fallback').textContent = `Can't hear it? It reads: ${q.pinyin}`;
-    $('smart-q-audio').onclick = () => speak(q.char);
-    speak(q.char);
-  }
-
-  const distractors = shuffle(
-    CHARACTERS.filter(c => c.char !== q.char && answerTextOf(skill, c) !== answerTextOf(skill, q))
-  ).slice(0, 3);
-  const options = shuffle([q, ...distractors]);
-
-  const optWrap = $('smart-q-options');
-  optWrap.innerHTML = '';
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-option' + (skill !== 'pronunciation' ? ' char-option' : '');
-    btn.textContent = answerTextOf(skill, opt);
-    btn.addEventListener('click', () => answerSmart(btn, opt === q, q, skill));
-    optWrap.appendChild(btn);
-  });
-}
-
-function answerSmart(btn, correct, q, skill) {
-  if (session.locked) return;
-  session.locked = true;
-  const current = session.queue.shift();
-  Adaptive.record(skill, correct ? 1 : 0);
-  session.attempts++;
-  if (correct) {
-    session.correct++;
-    SRS.grade(current.char, 'good');
-    btn.classList.add('correct');
+    $('front-text').textContent = c.meaning;
+    $('front-text').hidden = false;
   } else {
-    SRS.grade(current.char, 'again');
-    btn.classList.add('wrong');
-    const answer = answerTextOf(skill, q);
-    [...document.querySelectorAll('#smart-q-options .quiz-option')]
-      .find(b => b.textContent === answer)?.classList.add('correct');
-    requeue(current);
+    $('front-char').textContent = c.char;
+    $('front-char').hidden = false;
   }
-  if (skill !== 'listening') speak(q.char);
-  checkGoalCrossed();
-  setTimeout(nextItem, correct ? 650 : 1500);
+
+  $('back-char').textContent = c.char;
+  $('back-pinyin').textContent = c.pinyin;
+  $('back-meaning').textContent = c.meaning;
+  $('back-example').textContent = `${c.example} (${c.examplePinyin}) — ${c.exampleMeaning}`;
+  $('back-components').innerHTML = componentChips(c);
+  $('back-mnemonic').textContent = c.mnemonic;
+
+  card.hidden = false;
 }
 
-function requeue(card) {
-  // Failed cards come back a few items later in the same session.
-  const pos = Math.min(3, session.queue.length);
-  session.queue.splice(pos, 0, card);
-  session.total++;
+$('front-audio').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (current) speak(current.c.char);
+});
+
+$('quiz-card').addEventListener('click', () => {
+  const card = $('quiz-card');
+  if (!card.classList.contains('flipped')) {
+    card.classList.add('flipped');
+    $('judge').hidden = false;
+    // Hearing the word on reveal reinforces every card type except
+    // listening (where it would just repeat the question).
+    if (current && current.skill !== 'listening') speak(current.c.char);
+  }
+});
+
+$('back-char').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (current) openSheet(current.c);
+});
+$('back-speak').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (current) speak(current.c.char);
+});
+
+document.querySelectorAll('#judge .btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!current || current.skill === 'meet') return;
+    const good = btn.dataset.judge === 'good';
+    SRS.grade(current.c.char, good ? 'good' : 'again');
+    Adaptive.record(current.skill, good ? 1 : 0);
+    lastChar = current.c.char;
+    afterProgress();
+    showNext();
+  });
+});
+
+/* --- caught up: the app tells you to leave --- */
+function renderCaughtUp() {
+  const d = dailyCharacter();
+  $('caught-up-mascot').innerHTML = UI.mascot('sleepy', 92);
+  $('cu-daily-char').textContent = d.char;
+  $('cu-daily-pinyin').textContent = d.pinyin;
+  $('cu-daily-meaning').textContent = d.meaning;
+  $('caught-up').hidden = false;
 }
 
-function checkGoalCrossed() {
+$('caught-up-daily').addEventListener('click', () => openSheet(dailyCharacter()));
+
+/* --- floating moments --- */
+let prevDoneGoal = Adaptive.dailyProgress();
+let prevStreak = SRS.stats(CHARACTERS).streak;
+let momentTimer = null;
+
+function afterProgress() {
+  updateChips();
   const { done, goal } = Adaptive.dailyProgress();
-  if (!session.goalCelebrated && session.goalAtStart.done < session.goalAtStart.goal && done >= goal) {
-    session.goalCelebrated = true;
+  if (prevDoneGoal.done < prevDoneGoal.goal && done >= goal) {
+    showMoment('cheering', "🎯 That's your daily bite! Keep tapping, or go live your life — both count.");
     UI.confetti();
   }
-}
+  prevDoneGoal = { done, goal };
 
-/* --- session end --- */
-function finishSession() {
-  $('session-progress').textContent = '';
-  $('session-done').hidden = false;
-
-  const reviewed = session ? session.attempts : 0;
-  const acc = reviewed ? Math.round((session.correct / reviewed) * 100) : null;
-  $('summary-count').textContent = reviewed;
-  $('summary-acc').textContent = acc === null ? '–' : acc + '%';
-  $('summary-title').textContent = reviewed === 0 ? 'All caught up!' : 'Session complete!';
-  $('mascot-done').innerHTML = UI.mascot(reviewed === 0 ? 'sleepy' : 'cheering', 90);
-
-  // Re-trigger the seal stamp animation.
-  const seal = $('summary-seal');
-  seal.style.animation = 'none';
-  void seal.offsetWidth;
-  seal.style.animation = '';
-
-  const weakest = Adaptive.weakestSkill();
-  const { done, goal } = Adaptive.dailyProgress();
-  if (reviewed === 0) {
-    $('summary-tip').textContent = 'Nothing due right now — the spacing is doing its job. Come back later!';
-  } else if (done >= goal) {
-    $('summary-title').textContent = 'Daily goal hit! 🎯';
-    $('summary-tip').textContent = 'That\'s genuinely enough for today — short and regular beats long and rare. See you tomorrow!';
-  } else if (weakest) {
-    const label = Adaptive.summary().find(s => s.skill === weakest).label.toLowerCase();
-    $('summary-tip').textContent = `Your wobbliest skill right now is ${label} — the next smart session will lean into it. 💪`;
-  } else {
-    $('summary-tip').textContent = 'Great start! As you practice, sessions will tune themselves to how you learn.';
-  }
-
-  // More cards waiting? Offer one more bite — never demand it.
-  $('another-round').hidden = SRS.buildQueue(CHARACTERS).length === 0 || reviewed === 0;
-
-  const streakNow = SRS.stats(CHARACTERS).streak;
-  if (session && streakNow !== session.streakAtStart && [7, 30, 100].includes(streakNow)) {
+  const streak = SRS.stats(CHARACTERS).streak;
+  if (streak !== prevStreak && [7, 30, 100].includes(streak)) {
+    showMoment('cheering', `🔥 ${streak}-day streak! The panda is genuinely impressed.`);
     UI.confetti();
   }
-  renderToday();
+  prevStreak = streak;
 }
 
-$('back-to-today').addEventListener('click', () => showView('today'));
-$('another-round').addEventListener('click', () => startSession(true));
-
-/* ---------- Quiz ---------- */
-const QUIZ_LEN = 10;
-const QUIZ_SKILL = {
-  char2meaning: 'recognition',
-  char2pinyin: 'pronunciation',
-  audio2char: 'listening',
-  meaning2char: 'production',
-};
-let quiz = null;
-
-if (!('speechSynthesis' in window)) $('quiz-mode-audio').hidden = true;
-
-document.querySelectorAll('.quiz-mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => startQuiz(btn.dataset.mode));
+function showMoment(expression, text) {
+  $('moment-mascot').innerHTML = UI.mascot(expression, 84);
+  $('moment-text').textContent = text;
+  $('moment').hidden = false;
+  clearTimeout(momentTimer);
+  momentTimer = setTimeout(() => { $('moment').hidden = true; }, 2600);
+}
+$('moment').addEventListener('click', () => {
+  clearTimeout(momentTimer);
+  $('moment').hidden = true;
 });
 
-function quizPool() {
-  const seen = SRS.seenChars(CHARACTERS);
-  // Need a sensible pool for distractors; fall back to the full set early on.
-  return seen.length >= 8 ? seen : CHARACTERS;
-}
-
-function startQuiz(mode) {
-  quiz = {
-    mode,
-    questions: shuffle(quizPool()).slice(0, QUIZ_LEN),
-    index: 0,
-    score: 0,
-    locked: false,
-  };
-  $('quiz-setup').hidden = true;
-  $('quiz-result').hidden = true;
-  $('quiz-play').hidden = false;
-  renderQuestion();
-}
-
-function quizAnswerOf(c) {
-  return quiz.mode === 'char2meaning' ? c.meaning :
-         quiz.mode === 'char2pinyin' ? c.pinyin : c.char;
-}
-
-function renderQuestion() {
-  const q = quiz.questions[quiz.index];
-  quiz.locked = false;
-  $('quiz-progress').textContent = `${quiz.index + 1} / ${quiz.questions.length}`;
-  $('quiz-score').textContent = quiz.score;
-
-  const questionEl = $('quiz-question');
-  const audioWrap = $('quiz-audio-wrap');
-  questionEl.classList.remove('text-question');
-  audioWrap.hidden = true;
-
-  if (quiz.mode === 'audio2char') {
-    questionEl.textContent = '';
-    audioWrap.hidden = false;
-    $('quiz-audio-fallback').hidden = hasZhVoice();
-    $('quiz-audio-fallback').textContent = `Can't hear it? It reads: ${q.pinyin}`;
-    $('quiz-audio-btn').onclick = () => speak(q.char);
-    speak(q.char);
-  } else if (quiz.mode.startsWith('char')) {
-    questionEl.textContent = q.char;
-  } else {
-    questionEl.textContent = q.meaning;
-    questionEl.classList.add('text-question');
-  }
-
-  const distractors = shuffle(
-    CHARACTERS.filter(c => c.char !== q.char && quizAnswerOf(c) !== quizAnswerOf(q))
-  ).slice(0, 3);
-  const options = shuffle([q, ...distractors]);
-
-  const wrap = $('quiz-options');
-  wrap.innerHTML = '';
-  const charOptions = quiz.mode === 'meaning2char' || quiz.mode === 'audio2char';
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-option' + (charOptions ? ' char-option' : '');
-    btn.textContent = quizAnswerOf(opt);
-    btn.addEventListener('click', () => answer(btn, opt === q, q));
-    wrap.appendChild(btn);
-  });
-}
-
-function answer(btn, correct, q) {
-  if (quiz.locked) return;
-  quiz.locked = true;
-  Adaptive.record(QUIZ_SKILL[quiz.mode], correct ? 1 : 0);
-  if (correct) {
-    quiz.score++;
-    btn.classList.add('correct');
-  } else {
-    btn.classList.add('wrong');
-    const answerText = quizAnswerOf(q);
-    [...document.querySelectorAll('#quiz-options .quiz-option')]
-      .find(b => b.textContent === answerText)?.classList.add('correct');
-  }
-  if (quiz.mode !== 'audio2char') speak(q.char);
-  setTimeout(() => {
-    quiz.index++;
-    if (quiz.index >= quiz.questions.length) finishQuiz();
-    else renderQuestion();
-  }, correct ? 700 : 1500);
-}
-
-function finishQuiz() {
-  $('quiz-play').hidden = true;
-  $('quiz-result').hidden = false;
-  const pct = quiz.score / quiz.questions.length;
-  $('mascot-quiz').innerHTML = UI.mascot(pct >= 0.7 ? 'cheering' : 'thinking', 90);
-  $('quiz-final').textContent =
-    pct === 1 ? `Perfect! ${quiz.score} / ${quiz.questions.length} 🏆` :
-    pct >= 0.7 ? `Nice! You scored ${quiz.score} / ${quiz.questions.length}` :
-    `You scored ${quiz.score} / ${quiz.questions.length} — we'll get them next time!`;
-  if (pct === 1) UI.confetti();
-}
-
-$('quiz-again').addEventListener('click', () => {
-  $('quiz-result').hidden = true;
-  $('quiz-setup').hidden = false;
-});
-
-/* ---------- Write (stroke practice via Hanzi Writer) ---------- */
-let writer = null;
-let writeIndex = 0;
-let hanziWriterLoading = null;
-
-function loadHanziWriter() {
-  if (window.HanziWriter) return Promise.resolve();
-  if (hanziWriterLoading) return hanziWriterLoading;
-  hanziWriterLoading = new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js';
-    s.onload = resolve;
-    s.onerror = () => { hanziWriterLoading = null; reject(new Error('offline')); };
-    document.head.appendChild(s);
-  });
-  return hanziWriterLoading;
-}
-
-async function initWriter() {
-  const c = CHARACTERS[writeIndex];
-  $('write-current').textContent = c.char;
-  $('write-info').textContent = `${c.pinyin} — ${c.meaning}`;
-  const dark = document.documentElement.dataset.theme === 'dark';
-  try {
-    await loadHanziWriter();
-    $('write-offline-note').hidden = true;
-    $('writer-target').innerHTML = '';
-    writer = HanziWriter.create('writer-target', c.char, {
-      width: 260,
-      height: 260,
-      padding: 10,
-      strokeColor: dark ? '#ece4d4' : '#2b2622',
-      outlineColor: dark ? '#3a332c' : '#e3d9c6',
-      drawingColor: '#c0392b',
-      showCharacter: false,
-      showOutline: true,
-    });
-  } catch {
-    writer = null;
-    $('write-offline-note').hidden = false;
-    $('writer-target').innerHTML = `<p style="color:var(--ink-soft);padding:20px;text-align:center">Stroke data needs an internet connection.<br><br><span class="hanzi" style="font-size:4rem;color:var(--ink)">${c.char}</span></p>`;
-  }
-}
-
-$('write-prev').addEventListener('click', () => {
-  writeIndex = (writeIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
-  initWriter();
-});
-$('write-next').addEventListener('click', () => {
-  writeIndex = (writeIndex + 1) % CHARACTERS.length;
-  initWriter();
-});
-$('write-quiz').addEventListener('click', () => {
-  if (!writer) return;
-  $('write-info').textContent = '';
-  writer.quiz({
-    onComplete: (summaryData) => {
-      const mistakes = summaryData.totalMistakes ?? 0;
-      Adaptive.record('writing', mistakes === 0 ? 1 : mistakes <= 2 ? 0.7 : 0.3);
-      $('write-info').textContent = mistakes === 0
-        ? '✅ Flawless strokes! Try the next one.'
-        : `✅ Done — ${mistakes} slip${mistakes === 1 ? '' : 's'}. Practice makes perfect.`;
-    },
-  });
-});
-$('write-animate').addEventListener('click', () => writer && writer.animateCharacter());
-
-/* ---------- Browse ---------- */
+/* ============================================================
+   CHARACTERS (reference list)
+   ============================================================ */
 function renderBrowse(filter = '') {
   const f = filter.trim().toLowerCase();
   const list = $('browse-list');
@@ -596,25 +311,156 @@ function renderBrowse(filter = '') {
         <span class="browse-pinyin">${c.pinyin}</span>
         <span class="browse-meaning"> · ${c.meaning}</span><br>
         <span class="browse-meaning">${c.example} (${c.examplePinyin}) — ${c.exampleMeaning}</span>
-        <span class="browse-mnemonic">💭 ${c.mnemonic}</span>
       </span>
       <span class="browse-level ${level}">${level === 'mastered' ? '印' : level}</span>`;
-    item.addEventListener('click', () => {
-      item.classList.toggle('expanded');
-      speak(c.char);
-    });
+    item.addEventListener('click', () => openSheet(c));
     list.appendChild(item);
   }
 }
 
 $('browse-search').addEventListener('input', (e) => renderBrowse(e.target.value));
 
-/* ---------- PWA install ---------- */
+/* ============================================================
+   ME (dashboard)
+   ============================================================ */
+const BUBBLE_LINES = [
+  'One character at a time. 加油!',
+  'Small steps, big 汉字 energy.',
+  'Panda believes in you. Panda is rarely wrong.',
+  'The deck is always ready when you are.',
+];
+
+function renderMe() {
+  const d = dailyCharacter();
+  $('daily-card').dataset.watermark = d.char;
+  $('daily-char').textContent = d.char;
+  $('daily-pinyin').textContent = d.pinyin;
+  $('daily-meaning').textContent = d.meaning;
+  $('daily-example').textContent = `${d.example} (${d.examplePinyin}) — ${d.exampleMeaning}`;
+  $('widget-mini-char').textContent = d.char;
+
+  const s = SRS.stats(CHARACTERS);
+  UI.countUp($('stat-streak'), s.streak);
+  UI.countUp($('stat-learned'), s.learning);
+  UI.countUp($('stat-mastered'), s.mastered);
+  $('stat-total').textContent = s.total;
+
+  const due = SRS.buildQueue(CHARACTERS).length;
+  $('mascot-me').innerHTML = UI.mascot(due === 0 ? 'sleepy' : 'happy', 78);
+  $('mascot-bubble').textContent = due === 0
+    ? 'All caught up — nap time!'
+    : due > 0 && s.learning + s.mastered === 0
+      ? 'No setup, no pressure — the Learn tab is already dealing cards.'
+      : BUBBLE_LINES[Math.floor(Math.random() * BUBBLE_LINES.length)];
+
+  renderInsights();
+}
+
+function renderInsights() {
+  const rows = Adaptive.summary().map(s => {
+    const pct = Math.round(s.accuracy * 100);
+    return `
+      <div class="skill-row" title="${s.desc}">
+        <span class="skill-name">${s.icon} ${s.label}</span>
+        <div class="skill-bar"><div class="skill-bar-fill ${s.accuracy >= 0.75 ? 'strong' : ''}"
+             style="width:${s.hasData ? pct : 0}%"></div></div>
+        <span class="skill-pct">${s.hasData ? pct + '%' : '· · ·'}</span>
+      </div>`;
+  }).join('');
+  $('skill-rows').innerHTML = rows;
+  $('science-tip').textContent = '🔬 ' + Adaptive.scienceTip();
+}
+
+$('daily-card').addEventListener('click', () => openSheet(dailyCharacter()));
+
+/* ============================================================
+   DETAIL SHEET (story, components, strokes, audio)
+   ============================================================ */
+let writer = null;
+let sheetChar = null;
+let hanziWriterLoading = null;
+
+function loadHanziWriter() {
+  if (window.HanziWriter) return Promise.resolve();
+  if (hanziWriterLoading) return hanziWriterLoading;
+  hanziWriterLoading = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js';
+    s.onload = resolve;
+    s.onerror = () => { hanziWriterLoading = null; reject(new Error('offline')); };
+    document.head.appendChild(s);
+  });
+  return hanziWriterLoading;
+}
+
+async function openSheet(c) {
+  sheetChar = c;
+  $('sheet-char').textContent = c.char;
+  $('sheet-pinyin').textContent = c.pinyin;
+  $('sheet-meaning').textContent = c.meaning;
+  $('sheet-example').textContent = `${c.example} (${c.examplePinyin}) — ${c.exampleMeaning}`;
+  $('sheet-components').innerHTML = componentChips(c);
+  $('sheet-mnemonic').textContent = c.mnemonic;
+  $('write-info').textContent = '';
+  $('sheet-scrim').hidden = false;
+  $('sheet').hidden = false;
+
+  const dark = document.documentElement.dataset.theme === 'dark';
+  try {
+    await loadHanziWriter();
+    if (sheetChar !== c) return; // sheet changed while loading
+    $('writer-target').innerHTML = '';
+    writer = HanziWriter.create('writer-target', c.char, {
+      width: 240,
+      height: 240,
+      padding: 10,
+      strokeColor: dark ? '#ece4d4' : '#2b2622',
+      outlineColor: dark ? '#3a332c' : '#e3d9c6',
+      drawingColor: '#c0392b',
+      showCharacter: false,
+      showOutline: true,
+    });
+  } catch {
+    writer = null;
+    $('writer-target').innerHTML = `<p style="color:var(--ink-soft);padding:20px;text-align:center">Stroke practice needs an internet connection the first time.</p>`;
+  }
+}
+
+function closeSheet() {
+  $('sheet').hidden = true;
+  $('sheet-scrim').hidden = true;
+  $('writer-target').innerHTML = '';
+  writer = null;
+  sheetChar = null;
+}
+
+$('sheet-scrim').addEventListener('click', closeSheet);
+$('sheet').querySelector('.sheet-handle').addEventListener('click', closeSheet);
+$('sheet-speak').addEventListener('click', () => sheetChar && speak(sheetChar.char));
+
+$('write-quiz').addEventListener('click', () => {
+  if (!writer) return;
+  $('write-info').textContent = '';
+  writer.quiz({
+    onComplete: (summaryData) => {
+      const mistakes = summaryData.totalMistakes ?? 0;
+      Adaptive.record('writing', mistakes === 0 ? 1 : mistakes <= 2 ? 0.7 : 0.3);
+      updateChips();
+      $('write-info').textContent = mistakes === 0
+        ? '✅ Flawless strokes!'
+        : `✅ Done — ${mistakes} slip${mistakes === 1 ? '' : 's'}. Practice makes perfect.`;
+    },
+  });
+});
+$('write-animate').addEventListener('click', () => writer && writer.animateCharacter());
+
+/* ============================================================
+   PWA install + service worker
+   ============================================================ */
 let deferredInstall = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstall = e;
-  $('install-hint').hidden = false;
   $('install-btn').hidden = false;
 });
 $('install-btn').addEventListener('click', async () => {
@@ -622,19 +468,17 @@ $('install-btn').addEventListener('click', async () => {
   deferredInstall.prompt();
   await deferredInstall.userChoice;
   deferredInstall = null;
-  $('install-hint').hidden = true;
+  $('install-btn').hidden = true;
 });
-// On iOS Safari there is no install prompt — show the manual hint instead.
-if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone) {
-  $('install-hint').hidden = false;
-}
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-/* ---------- init ---------- */
-renderToday();
-// Support deep links from the manifest shortcuts (e.g. index.html#learn).
+/* ---------- init: a card is already there ---------- */
+updateChips();
+showNext();
+// Manifest shortcuts can deep-link to the reference surfaces; anything else
+// (including old pre-rebuild hashes) is ignored and lands on the deck.
 const hash = location.hash.replace('#', '');
-if (['learn', 'quiz', 'write', 'browse'].includes(hash)) showView(hash);
+if (['chars', 'me'].includes(hash)) showView(hash);

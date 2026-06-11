@@ -103,6 +103,21 @@ test('goal is clamped and persisted', () => {
   assert.equal(Adaptive.dailyProgress().goal, 25);
 });
 
+test('bumpDaily counts toward the daily bite without touching skills', () => {
+  Adaptive._setStorage(memStorage());
+  const day = new Date('2026-06-11T10:00:00').getTime();
+  Adaptive.bumpDaily(day);
+  Adaptive.bumpDaily(day);
+  assert.equal(Adaptive.dailyProgress(day).done, 2);
+  for (const s of Adaptive.SKILLS) {
+    assert.equal(Adaptive.summary().find((x) => x.skill === s).attempts, 0, `${s} untouched`);
+  }
+  // Resets on a new day like record() does.
+  const nextDay = new Date('2026-06-12T10:00:00').getTime();
+  Adaptive.bumpDaily(nextDay);
+  assert.equal(Adaptive.dailyProgress(nextDay).done, 1);
+});
+
 test('corrupt JSON recovers to a fresh profile', () => {
   Adaptive._setStorage(memStorage({ 'hanzi-trainer-profile-v1': '{not json!!' }));
   assert.equal(Adaptive.acc('recognition'), 0.5);

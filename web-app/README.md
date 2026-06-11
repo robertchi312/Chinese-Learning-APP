@@ -1,7 +1,8 @@
 # 汉字 Trainer — Web App (PWA)
 
 A zero-dependency, installable progressive web app. No build step, no
-framework — just open it.
+framework — just open it. **Opening the app lands you straight on a card**:
+the deck is the whole product; Characters and Me are reference surfaces.
 
 ## Run locally
 
@@ -30,34 +31,37 @@ Any static host works. Easiest: **GitHub Pages** —
 repo Settings → Pages → deploy from branch, folder `/web-app`.
 Or drag the folder into Netlify / Vercel.
 
-## How the adaptive engine works
+## How the deck works
 
-The app tracks your accuracy on five skills — recognizing, pronouncing,
-listening, recalling and writing — as an exponentially-weighted moving
-average. **Smart sessions** keep the spaced-repetition scheduler in charge of
-*which* characters you see, but pick *how* each one is practiced by sampling
-skills weighted toward your weak spots (with a floor so strong skills stay in
-rotation — that's interleaving). The "How you learn" panel on Today shows your
-live profile. Until a skill has 3 attempts it sits at a neutral prior, so the
-app doesn't overreact to your first few answers.
+The spaced-repetition scheduler decides *which* card you see (due cards
+first, then up to 10 new per day); the adaptive engine decides *how* it's
+asked, sampling card fronts weighted toward your weakest skills — recognizing,
+pronouncing, listening, recalling — with a floor so strong skills stay in
+rotation (interleaving). Accuracy per skill is an exponentially-weighted
+moving average; until a skill has 3 attempts it sits at a neutral prior. New
+characters appear as "meet cards" (no quiz), then come straight back as their
+own first retrieval. When nothing is worth reviewing, the app says so and
+tells you to leave.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `index.html` | All five views (Today / Learn / Quiz / Write / Browse) |
+| `index.html` | The deck (Learn) + Characters + Me, and the detail sheet |
 | `css/style.css` | "Ink & Paper" design system (tokens, night-ink dark mode) |
 | `js/data.js` | Character data — generated, run `node ../tools/build-data.mjs` |
 | `js/srs.js` | Spaced-repetition scheduler + progress storage (localStorage) |
 | `js/adaptive.js` | Adaptive engine: skill tracking, session weighting, daily goal |
 | `js/ui.js` | Panda mascot, theme toggle, confetti, count-up animations |
-| `js/app.js` | App logic: smart sessions, flashcards, quizzes, stroke practice |
+| `js/app.js` | The deck loop, reference surfaces, detail sheet |
 | `sw.js` | Service worker — offline caching |
 | `manifest.webmanifest` | PWA manifest (icons, name, home-screen shortcuts) |
 
 ## A note on widgets
 
 True home-screen widgets aren't possible for web apps on iOS/Android — that's
-what the [`mobile-app/`](../mobile-app/) option is for. The PWA's equivalent
-is the **Today tab** (character of the day) and the app-shortcut ("Start
-review") you get on long-pressing the installed icon on Android.
+what the [`mobile-app/`](../mobile-app/) option is for (the native widget code
+already exists there). The PWA's equivalent is the **character of the day** on
+the Me tab and the installed home-screen icon that drops you straight onto a
+card. Web, app, and widgets all compute the daily character the same way
+(`dayOfYear % 155`), so every surface always agrees.

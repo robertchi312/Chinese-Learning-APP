@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f5efe2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1c1916" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="Learn Chinese characters with science-backed flashcards, quizzes and stroke practice — and a panda cheering you on.">
+  <meta name="description" content="A character on your home screen. A deck in your pocket. Tap, flip, done.">
   <title>汉字 Trainer — Learn Chinese Characters</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -30,189 +30,159 @@
   <header class="app-header">
     <h1><span class="seal-stamp">学</span> 汉字 Trainer</h1>
     <div class="header-actions">
-      <div class="streak" id="streak-badge" title="Daily streak">🔥 <span id="streak-count">0</span></div>
+      <div class="chip chip-daily" id="daily-chip" title="Today's bite — tap to change your goal">🎯 <span id="daily-done">0</span>/<span id="daily-goal">10</span></div>
+      <div class="chip chip-streak" id="streak-badge" title="Daily streak">🔥 <span id="streak-count">0</span></div>
       <button class="theme-toggle" id="theme-toggle" title="Toggle night ink mode" aria-label="Toggle dark mode">🌙</button>
     </div>
   </header>
 
   <main id="main">
-    <!-- TODAY -->
-    <section id="view-today" class="view active">
-      <div class="mascot-row">
-        <div id="mascot-today"></div>
-        <div class="mascot-bubble" id="mascot-bubble">Ready when you are!</div>
+    <!-- ===================== LEARN: the deck ===================== -->
+    <section id="view-learn" class="view active">
+
+      <!-- meet card: first encounter with a character -->
+      <div class="card meet-card" id="meet-card" hidden>
+        <p class="meet-tag">✨ New character</p>
+        <p class="fc-char hanzi" id="meet-char">好</p>
+        <p class="fc-pinyin" id="meet-pinyin">hǎo</p>
+        <p class="fc-meaning" id="meet-meaning">good</p>
+        <div class="fc-components" id="meet-components"></div>
+        <p class="fc-mnemonic" id="meet-mnemonic"></p>
+        <p class="fc-example" id="meet-example"></p>
+        <button class="btn btn-ghost btn-small" id="meet-speak">🔊 Listen</button>
+        <button class="btn btn-primary btn-big" id="meet-next" style="margin-top:14px">Got it →</button>
       </div>
 
-      <div class="today-top">
-        <div class="card daily-card" id="daily-card">
-          <p class="card-label">Character of the day</p>
-          <p class="daily-char" id="daily-char">学</p>
-          <p class="daily-pinyin" id="daily-pinyin">xué</p>
-          <p class="daily-meaning" id="daily-meaning">to study</p>
-          <p class="daily-example" id="daily-example"></p>
-          <button class="btn btn-ghost btn-small" id="daily-speak">🔊 Listen</button>
-        </div>
-        <div class="goal-ring-wrap" id="goal-ring-wrap" title="Tap to change your daily goal">
-          <div style="position: relative">
-            <svg class="goal-ring" id="goal-ring" width="92" height="92" viewBox="0 0 92 92">
-              <circle class="ring-bg" cx="46" cy="46" r="40" fill="none" stroke-width="8"/>
-              <circle class="ring-fill" id="goal-ring-fill" cx="46" cy="46" r="40" fill="none" stroke-width="8"
-                      stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
-            </svg>
-            <div class="goal-ring-label">
-              <span class="goal-ring-num" id="goal-done">0</span>
-              <span class="goal-ring-sub">of <span id="goal-target">20</span></span>
-            </div>
+      <!-- quiz card: tap to flip, judge -->
+      <div class="flashcard" id="quiz-card" hidden>
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <span class="smart-skill-tag" id="front-tag">👀 what does it mean?</span>
+            <p class="fc-char hanzi" id="front-char" hidden>你</p>
+            <button class="quiz-audio-btn" id="front-audio" hidden>🔊</button>
+            <p class="quiz-audio-fallback" id="front-fallback" hidden></p>
+            <p class="front-text" id="front-text" hidden>you</p>
+            <p class="fc-hint">tap to reveal</p>
           </div>
-          <span class="goal-hint">daily goal · tap to edit</span>
+          <div class="flashcard-back">
+            <p class="fc-char-small hanzi" id="back-char" title="Tap for story & strokes">你</p>
+            <p class="fc-pinyin" id="back-pinyin">nǐ</p>
+            <p class="fc-meaning" id="back-meaning">you</p>
+            <p class="fc-example" id="back-example"></p>
+            <div class="fc-components" id="back-components"></div>
+            <p class="fc-mnemonic" id="back-mnemonic"></p>
+            <button class="btn btn-ghost btn-small" id="back-speak">🔊</button>
+          </div>
         </div>
+      </div>
+      <div class="grade-buttons" id="judge" hidden>
+        <button class="btn grade-again" data-judge="again">Not yet</button>
+        <button class="btn grade-good" data-judge="good">Got it ✓</button>
+      </div>
+
+      <!-- caught up: the app tells you to leave -->
+      <div class="caught-up" id="caught-up" hidden>
+        <div id="caught-up-mascot"></div>
+        <h2>All caught up!</h2>
+        <p class="muted">Nothing worth reviewing right now — the spacing is doing its job. Come back later.</p>
+        <div class="card daily-mini" id="caught-up-daily" title="Character of the day — tap for story & strokes">
+          <p class="card-label">Character of the day</p>
+          <p class="daily-char hanzi" id="cu-daily-char">学</p>
+          <p class="daily-pinyin" id="cu-daily-pinyin">xué</p>
+          <p class="daily-meaning" id="cu-daily-meaning">to study</p>
+        </div>
+      </div>
+
+      <!-- floating moment overlay (goal hit, milestones) -->
+      <div class="moment" id="moment" hidden>
+        <div class="moment-card">
+          <div id="moment-mascot"></div>
+          <p class="moment-text" id="moment-text"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CHARACTERS ===================== -->
+    <section id="view-chars" class="view">
+      <input type="search" id="browse-search" class="search-input" placeholder="Search character, pinyin or meaning…">
+      <div class="browse-list" id="browse-list"></div>
+    </section>
+
+    <!-- ===================== ME ===================== -->
+    <section id="view-me" class="view">
+      <div class="mascot-row">
+        <div id="mascot-me"></div>
+        <div class="mascot-bubble" id="mascot-bubble">Hi!</div>
+      </div>
+
+      <div class="card daily-card" id="daily-card" title="Tap for story & strokes">
+        <p class="card-label">Character of the day</p>
+        <p class="daily-char hanzi" id="daily-char">学</p>
+        <p class="daily-pinyin" id="daily-pinyin">xué</p>
+        <p class="daily-meaning" id="daily-meaning">to study</p>
+        <p class="daily-example" id="daily-example"></p>
       </div>
 
       <div class="stats-grid">
-        <div class="stat-box"><span class="stat-num" id="stat-due">0</span><span class="stat-label">due now</span></div>
+        <div class="stat-box"><span class="stat-num" id="stat-streak">0</span><span class="stat-label">🔥 streak</span></div>
         <div class="stat-box"><span class="stat-num" id="stat-learned">0</span><span class="stat-label">learning</span></div>
         <div class="stat-box"><span class="stat-num" id="stat-mastered">0</span><span class="stat-label">mastered</span></div>
         <div class="stat-box"><span class="stat-num" id="stat-total">155</span><span class="stat-label">total</span></div>
       </div>
 
-      <button class="btn btn-primary btn-big" id="start-smart">✨ Smart session · ~2 min</button>
-      <p class="muted" style="text-align:center; margin-top:8px; margin-bottom:0" id="cta-subtitle">
-        No decisions needed — the app picks what's worth practicing, and how.
-      </p>
-
       <details class="insights card" id="insights">
         <summary>🧠 How you learn</summary>
         <p class="muted" style="margin-top:10px; margin-bottom:0">
-          You don't have to study "the right way" — the app quietly handles
+          You don't have to study "the right way" — the deck quietly handles
           that for you. Here's what it has noticed so far:
         </p>
         <div class="skill-rows" id="skill-rows"></div>
         <div class="science-tip" id="science-tip"></div>
       </details>
 
-      <div class="card install-hint" id="install-hint" hidden>
-        <p>📱 <strong>Install this app:</strong> tap your browser menu → <em>Add to Home Screen</em> to use it like a real app, offline included.</p>
-        <button class="btn btn-ghost" id="install-btn" hidden>Install now</button>
-      </div>
-    </section>
-
-    <!-- LEARN (smart session / classic flashcards) -->
-    <section id="view-learn" class="view">
-      <div class="session-meta"><span id="session-progress"></span></div>
-
-      <!-- inline quiz-style question (smart session) -->
-      <div class="smart-question" id="smart-question" hidden>
-        <div style="text-align:center"><span class="smart-skill-tag" id="smart-skill-tag"></span></div>
-        <p class="quiz-question" id="smart-q-text"></p>
-        <div id="smart-q-audio-wrap" hidden>
-          <button class="quiz-audio-btn" id="smart-q-audio">🔊</button>
-          <p class="quiz-audio-fallback" id="smart-q-fallback" hidden></p>
-        </div>
-        <div class="quiz-options" id="smart-q-options"></div>
-      </div>
-
-      <!-- classic flashcard -->
-      <div class="flashcard" id="flashcard" hidden>
-        <div class="flashcard-inner" id="flashcard-inner">
-          <div class="flashcard-front">
-            <p class="fc-char" id="fc-char">你</p>
-            <p class="fc-hint">tap to reveal</p>
-          </div>
-          <div class="flashcard-back">
-            <p class="fc-char-small" id="fc-char-back">你</p>
-            <p class="fc-pinyin" id="fc-pinyin">nǐ</p>
-            <p class="fc-meaning" id="fc-meaning">you</p>
-            <p class="fc-example" id="fc-example"></p>
-            <div class="fc-components" id="fc-components"></div>
-            <p class="fc-mnemonic" id="fc-mnemonic"></p>
-            <button class="btn btn-ghost btn-small" id="fc-speak">🔊</button>
+      <div class="card widget-card">
+        <p class="card-label">On your home screen</p>
+        <div class="widget-preview">
+          <span class="widget-mini" id="widget-mini-char">学</span>
+          <div>
+            <p style="font-weight:800">A new character every day, at a glance.</p>
+            <p class="muted" style="margin:4px 0 0">Install the app to put it there: browser menu → <em>Add to Home Screen</em>. Native widgets for iPhone &amp; Android are next on the roadmap.</p>
           </div>
         </div>
+        <button class="btn btn-primary" id="install-btn" hidden style="margin-top:12px">📱 Install now</button>
       </div>
-      <div class="grade-buttons" id="grade-buttons" hidden>
-        <button class="btn grade-again" data-grade="again">Not yet</button>
-        <button class="btn grade-good" data-grade="good">Got it ✓</button>
-      </div>
-
-      <!-- session summary -->
-      <div class="session-done" id="session-done" hidden>
-        <div class="card summary-card">
-          <div class="summary-seal" id="summary-seal">好</div>
-          <div id="mascot-done" style="display:flex; justify-content:center"></div>
-          <h2 id="summary-title">Session complete!</h2>
-          <div class="summary-stats">
-            <div class="summary-stat"><span class="stat-num" id="summary-count">0</span><span class="stat-label">reviewed</span></div>
-            <div class="summary-stat"><span class="stat-num" id="summary-acc">–</span><span class="stat-label">accuracy</span></div>
-          </div>
-          <p class="summary-tip" id="summary-tip"></p>
-        </div>
-        <button class="btn btn-outline btn-big" id="another-round" hidden style="margin-bottom:10px">One more quick round?</button>
-        <button class="btn btn-primary" id="back-to-today">Done for now</button>
-      </div>
-    </section>
-
-    <!-- QUIZ -->
-    <section id="view-quiz" class="view">
-      <div id="quiz-setup">
-        <h2>Quiz yourself</h2>
-        <svg class="brush-underline" viewBox="0 0 120 8" preserveAspectRatio="none"><path d="M2 5 Q 30 2 60 4 T 118 3" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
-        <p class="muted">10 questions from the characters you've seen. Each mode trains a different skill.</p>
-        <div class="quiz-modes">
-          <button class="btn btn-outline quiz-mode-btn" data-mode="char2meaning"><span>字 → meaning</span><span class="quiz-mode-skill">recognition</span></button>
-          <button class="btn btn-outline quiz-mode-btn" data-mode="char2pinyin"><span>字 → pīnyīn</span><span class="quiz-mode-skill">pronunciation</span></button>
-          <button class="btn btn-outline quiz-mode-btn" data-mode="audio2char" id="quiz-mode-audio"><span>🔊 → 字</span><span class="quiz-mode-skill">listening</span></button>
-          <button class="btn btn-outline quiz-mode-btn" data-mode="meaning2char"><span>meaning → 字</span><span class="quiz-mode-skill">production</span></button>
-        </div>
-      </div>
-      <div id="quiz-play" hidden>
-        <div class="session-meta"><span id="quiz-progress"></span> · score <span id="quiz-score">0</span></div>
-        <p class="quiz-question" id="quiz-question">你</p>
-        <div id="quiz-audio-wrap" hidden>
-          <button class="quiz-audio-btn" id="quiz-audio-btn">🔊</button>
-          <p class="quiz-audio-fallback" id="quiz-audio-fallback" hidden></p>
-        </div>
-        <div class="quiz-options" id="quiz-options"></div>
-      </div>
-      <div id="quiz-result" hidden>
-        <div class="session-done">
-          <div id="mascot-quiz" style="display:flex; justify-content:center"></div>
-          <p class="quiz-final" id="quiz-final"></p>
-          <button class="btn btn-primary" id="quiz-again">Play again</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- WRITE -->
-    <section id="view-write" class="view">
-      <h2>Stroke practice</h2>
-      <svg class="brush-underline" viewBox="0 0 120 8" preserveAspectRatio="none"><path d="M2 5 Q 30 2 60 4 T 118 3" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
-      <p class="muted">Trace the strokes in the correct order. <span id="write-offline-note" hidden>(Requires internet the first time to load stroke data.)</span></p>
-      <div class="write-controls">
-        <button class="btn btn-outline" id="write-prev">‹</button>
-        <span class="write-current" id="write-current">你</span>
-        <button class="btn btn-outline" id="write-next">›</button>
-      </div>
-      <div id="writer-target"></div>
-      <div class="write-actions">
-        <button class="btn btn-primary" id="write-quiz">✍️ Practice</button>
-        <button class="btn btn-ghost" id="write-animate">▶ Animate</button>
-      </div>
-      <p class="write-info" id="write-info"></p>
-    </section>
-
-    <!-- BROWSE -->
-    <section id="view-browse" class="view">
-      <input type="search" id="browse-search" class="search-input" placeholder="Search character, pinyin or meaning…">
-      <div class="browse-list" id="browse-list"></div>
     </section>
   </main>
 
+  <!-- character detail bottom sheet -->
+  <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-handle"></div>
+    <div class="sheet-body">
+      <div class="sheet-head">
+        <span class="sheet-char hanzi" id="sheet-char">好</span>
+        <div>
+          <p class="fc-pinyin" id="sheet-pinyin">hǎo</p>
+          <p class="fc-meaning" id="sheet-meaning">good</p>
+        </div>
+        <button class="btn btn-ghost" id="sheet-speak">🔊</button>
+      </div>
+      <p class="fc-example" id="sheet-example"></p>
+      <div class="fc-components" id="sheet-components"></div>
+      <p class="fc-mnemonic" id="sheet-mnemonic"></p>
+      <div id="writer-target"></div>
+      <div class="write-actions">
+        <button class="btn btn-primary" id="write-quiz">✍️ Practice strokes</button>
+        <button class="btn btn-ghost" id="write-animate">▶ Animate</button>
+      </div>
+      <p class="write-info" id="write-info"></p>
+    </div>
+  </div>
+
   <nav class="tab-bar">
-    <button class="tab active" data-view="today"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>🏠</span>Today</button>
-    <button class="tab" data-view="learn"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>🎴</span>Learn</button>
-    <button class="tab" data-view="quiz"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>❓</span>Quiz</button>
-    <button class="tab" data-view="write"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>✍️</span>Write</button>
-    <button class="tab" data-view="browse"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>📚</span>Browse</button>
+    <button class="tab active" data-view="learn"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>🎴</span>Learn</button>
+    <button class="tab" data-view="chars"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>📚</span>Characters</button>
+    <button class="tab" data-view="me"><svg class="tab-brush" viewBox="0 0 30 5"><path d="M1 3 Q 15 1 29 2.5" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg><span>🐼</span>Me</button>
   </nav>
 
   <script src="js/data.js"></script>

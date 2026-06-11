@@ -1,5 +1,5 @@
 // Service worker: cache-first for the app shell so the PWA works fully offline.
-const CACHE = 'hanzi-trainer-v2';
+const CACHE = 'hanzi-trainer-v3';
 const ASSETS = [
   './',
   './index.html',

@@ -22,9 +22,11 @@ second.** Evidence-based mechanics, operated entirely by the app.
 ## Design principles
 
 ### 1. Zero friction to start
-No account. No download. No setup quiz. No deck configuration. Open the
-link → tap one red button → you're learning. The first session should begin
-within five seconds of first opening the app, with zero decisions made.
+No account. No download. No setup quiz. No configuration. Opening the app
+*is* starting: a card is already on screen. The atomic unit of value is one
+recall (~5 seconds), so any visit length is a valid visit — one card in an
+elevator or forty on the train. There is no session to start or finish;
+closing the app is the end button.
 
 ### 2. The app is the discipline, so the user doesn't have to be
 Every place where a study method normally demands user intentionality, the
@@ -34,14 +36,15 @@ app absorbs that work:
 |---|---|---|
 | Space your reviews | Configure intervals, manage decks | Scheduler runs silently; "due" cards just appear |
 | Test yourself | Decide how to self-grade (4+ options) | Two honest buttons: **Got it / Not yet** |
-| Mix practice types | Pick modes, plan study variety | Smart session interleaves automatically |
+| Mix practice types | Pick modes, plan study variety | The deck rotates card fronts automatically |
 | Target weaknesses | Notice your own weak spots | Engine measures 5 skills and tilts practice itself |
 | Use mnemonics | Invent your own memory stories | Every character ships with one |
 | Study consistently, briefly | Set schedules, resist cramming | Sessions are capped small; the app says when you're done |
 
 ### 3. Small bites, by design
-Sessions are deliberately capped (~15 items, a couple of minutes). The daily
-goal defaults low. When nothing is due, the app *tells you to leave* ("nap
+New characters cap at 10 per day. The daily goal defaults low, and crossing
+it triggers a "that's your daily bite" moment — keep tapping or leave, both
+count. When nothing is worth reviewing, the app *tells you to leave* ("nap
 time"). Stopping points are a feature: an app that never says "you're done"
 is an app people feel behind on, and feeling behind is why people quit.
 
